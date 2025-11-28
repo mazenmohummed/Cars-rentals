@@ -1,0 +1,197 @@
+// // This is your Prisma schema file,
+// // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// generator client {
+//   provider = "prisma-client"
+//   output   = "../generated/prisma"
+// }
+
+// datasource db {
+//   provider = "mongodb"
+//   url      = env("DATABASE_URL")
+// }
+// // =====================
+// // USER
+// // =====================
+// model User {
+//   id          String   @id @default(uuid()) @map("_id")
+//   firstName   String
+//   lastName    String
+//   email       String   @unique
+//   telephone   String
+//   password    String
+
+//   role        UserRole @default(CUSTOMER)
+
+//   reservations Reservation[]
+//   createdAt   DateTime @default(now())
+// }
+
+// enum UserRole {
+//   CUSTOMER
+//   ADMIN
+//   STAFF
+// }
+
+
+// // =====================
+// // CITY
+// // =====================
+// model City {
+//   id        String   @id @default(uuid())  @map("_id")
+//   name      String   @unique
+
+//   pickupReservations Reservation[] @relation("PickupCity")
+//   returnReservations Reservation[] @relation("ReturnCity")
+// }
+
+
+// // =====================
+// // CAR
+// // =====================
+// model Car {
+//   id              String   @id @default(uuid()) @map("_id")
+//   name            String
+//   type            String   // Sedan, SUV, etc
+//   image           String
+//   seats           Int
+//   bags            Int
+//   doors           Int
+//   automatic       Boolean
+
+//   mileagePlans    MileagePlan[]
+//   reservations    Reservation[]
+
+//   createdAt       DateTime @default(now())
+// }
+
+
+// // =====================
+// // MILEAGE PLAN
+// // =====================
+// model MileagePlan {
+//   id                String   @id @default(uuid()) @map("_id")
+//   name              String   // "Limited", "Unlimited"
+//   kmPerDay          Int?
+//   extraKmPrice      Float?
+
+//   carId             String
+//   car               Car      @relation(fields: [carId], references: [id])
+
+//   reservations      Reservation[]
+// }
+
+
+// // =====================
+// // EXTRA SERVICES
+// // =====================
+// model ExtraService {
+//   id        String   @id @default(uuid()) @map("_id")
+//   name      String   // Wifi Hotspot, Baby Seat
+//   price     Float
+
+//   reservations ReservationService[]
+// }
+
+
+// // =====================
+// // RESERVATION
+// // =====================
+// model Reservation {
+//   id            String   @id @default(uuid()) @map("_id")
+
+//   userId        String
+//   user          User     @relation(fields: [userId], references: [id])
+
+//   carId         String
+//   car           Car      @relation(fields: [carId], references: [id])
+
+//   pickupCityId  String
+//   pickupCity    City     @relation("PickupCity", fields: [pickupCityId], references: [id])
+
+//   returnCityId  String
+//   returnCity    City     @relation("ReturnCity", fields: [returnCityId], references: [id])
+
+//   mileagePlanId String
+//   mileagePlan   MileagePlan @relation(fields: [mileagePlanId], references: [id])
+
+//   startDate     DateTime
+//   endDate       DateTime
+//   reservationDate DateTime @default(now())
+
+//   totalPrice    Float
+//   quantity      Int        @default(1)
+
+//   services      ReservationService[]
+// }
+
+
+// // =====================
+// // RESERVATION <-> SERVICE (MANY TO MANY)
+// // =====================
+// model ReservationService {
+//   id              String   @id @default(uuid()) @map("_id")
+
+//   reservationId   String
+//   reservation     Reservation @relation(fields: [reservationId], references: [id])
+
+//   serviceId       String
+//   service         ExtraService @relation(fields: [serviceId], references: [id])
+// }
+
+// // =====================
+// // Track payment status
+// // Support future gateways (Stripe, Paymob, etc.)
+// // One reservation → one payment (most common case)
+// // =====================
+
+// model Payment {
+//   id              String   @id @default(uuid()) @map("_id")
+
+//   reservationId   String   @unique
+//   reservation     Reservation @relation(fields: [reservationId], references: [id])
+
+//   amount          Float
+//   method          PaymentMethod
+//   status          PaymentStatus
+
+//   transactionRef  String?
+//   paidAt          DateTime?
+
+//   createdAt       DateTime @default(now())
+// }
+
+// enum PaymentMethod {
+//   CASH
+//   CARD
+//   ONLINE
+// }
+
+// enum PaymentStatus {
+//   PENDING
+//   PAID
+//   FAILED
+//   REFUNDED
+// }
+
+// // =====================
+// //Better performance than checking reservations each time
+// //Allows blocking cars (maintenance, issues, etc.)
+// // =====================
+
+// model CarAvailability {
+//   id        String   @id @default(uuid()) @map("_id")
+
+//   carId     String
+//   car       Car      @relation(fields: [carId], references: [id])
+
+//   startDate DateTime
+//   endDate   DateTime
+
+//   reason    String?  // Maintenance, Reserved manually
+//   isActive  Boolean  @default(true)
+// }
+
