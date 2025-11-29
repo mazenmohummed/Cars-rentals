@@ -19,7 +19,17 @@ const page = ({}: IProps) => {
   return (
     <main className="p-6 flex justify-center">
       <div className="flex items-center justify-between px-6 w-full md:w-5/6 xl:w-5/6  lg:w-5/6 "> 
-        <ConfirmCard Name={car?.Name} Comment={car?.Comment} DayPrice={car?.DayPrice} ImgUrl={car?.ImgUrl} TotalPrice={car?.TotalPrice} Type={car?.Type} />
+        <ConfirmCard  
+        Name={car?.Name} 
+        Comment={car?.Comment} 
+        DayPrice={car?.DayPrice} 
+        ImgUrl={car?.ImgUrl} 
+        TotalPrice={car?.TotalPrice} 
+        Type={car?.Type}
+        automatic= {car?.automatic}
+        bags={car?.bags}
+        doors={car?.doors}
+        seats={car?.seats} />
     </div>
     </main>
   )

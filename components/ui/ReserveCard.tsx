@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/item"
 import Link from "next/link";
 import { useState } from "react";
+import { User } from 'lucide-react';
+import { Luggage } from 'lucide-react';
+import { GiCarDoor } from "react-icons/gi";
+
 
 interface IProps {
 Name:string,
@@ -25,29 +29,47 @@ DayPrice: number,
 TotalPrice: number,
 MileageKM:number,
 Id: string,
+seats:number,
+bags: number,
+doors:number,
+automatic:boolean,
 }
 
 
 
-export default function ReserveCard({ Name, Type, ImgUrl, Comment, DayPrice, TotalPrice,MileageKM,Id }: IProps ) {
+export default function ReserveCard({ 
+  Name, 
+  Type, 
+  ImgUrl, 
+  Comment, 
+  DayPrice,
+  TotalPrice,
+  MileageKM,
+  Id,
+  seats,
+  bags,
+  doors,
+  automatic,
+ }: IProps ) {
   
   const [Mileage, setMileage] = useState<string | null>(null);
   console.log(Mileage)
   
   return (
 
-    <div className="flex h-auto ">
+    <div className="flex w-full md:w-5/6 xl:w-5/6  lg:w-5/6 mx-auto  h-auto ">
       <Item variant="outline" className=" w-full flex h-auto">
-        <div className="flex flex-wrap">
+        <div className="flex w-full flex-wrap">
 
         <ItemContent className="m-2">
 
             <ItemTitle className="text-2xl">{Name}</ItemTitle>
             <ItemTitle className="text-2xl">{Type}</ItemTitle>
             <div>
-            <Badge variant="outline">one</Badge>
-            <Badge variant="outline">two</Badge>
-            <Badge variant="outline">three</Badge>
+            <Badge variant="outline"><User />{seats}</Badge>
+            <Badge variant="outline"><Luggage />{bags}</Badge>
+            <Badge variant="outline"><GiCarDoor />{doors}</Badge>
+            {automatic && <Badge>Automatic</Badge>}
             </div>
                  <div className="relative mx-auto w-full pb-4 ">
                     <img 
@@ -64,13 +86,13 @@ export default function ReserveCard({ Name, Type, ImgUrl, Comment, DayPrice, Tot
           <div className="flex items-end gap-2">
            {/* Daily price */}
              <div className="flex items-baseline gap-1">
-               <span className="text-sm font-medium text-gray-300">E£</span>
-               <span className="text-3xl font-bold text-white">{DayPrice}</span>
-               <span className="text-sm text-gray-300">/day</span>
+               <span className="text-sm font-medium ">E£</span>
+               <span className="text-3xl font-bold ">{DayPrice}</span>
+               <span className="text-sm ">/day</span>
              </div>
 
              {/* Total price */}
-             <span className="text-sm text-gray-400">E£ {TotalPrice} total</span>
+             <span className="text-sm ">E£ {TotalPrice} total</span>
 
                
 
@@ -81,7 +103,7 @@ export default function ReserveCard({ Name, Type, ImgUrl, Comment, DayPrice, Tot
           <ItemTitle className="text-2xl mx-6 ">Mileage</ItemTitle>
           <div className="rid content-end h-full">
           <Item variant="outline"  className={`my-6 w-96 cursor-pointer ${
-        Mileage === "unlimited" ? "ring-2  ring-white" : ""
+        Mileage === "unlimited" ? "ring-2  dark:ring-white ring-black" : ""
       }`}
       onClick={() => setMileage ("unlimited")} >
             <ItemContent>
@@ -92,7 +114,7 @@ export default function ReserveCard({ Name, Type, ImgUrl, Comment, DayPrice, Tot
             </ItemContent>
           </Item>
           <Item variant="outline" className={`my-6 w-96 cursor-pointer ${
-        Mileage === `${MileageKM}`? "ring-2 ring-white" : ""
+        Mileage === `${MileageKM}`? "ring-2  dark:ring-white ring-black" : ""
       }`}
       onClick={() => setMileage (`${MileageKM}`)} >
             <ItemContent>

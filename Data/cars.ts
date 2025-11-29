@@ -9,6 +9,10 @@ export interface Car {
   DayPrice: number;
   TotalPrice: number;
   MileageKM:number;
+  seats:number;
+  bags: number;
+  doors:number;
+  automatic:boolean;
 }
 
 export const cars: Car[] = [
@@ -22,6 +26,10 @@ export const cars: Car[] = [
     DayPrice: 400,
     TotalPrice: 1200,
     MileageKM:800,
+    seats:5,
+    bags: 3,
+    doors:4,
+    automatic:true,
   },
   {
     id: 2,
@@ -33,6 +41,10 @@ export const cars: Car[] = [
     DayPrice: 350,
     TotalPrice: 1100,
     MileageKM:600,
+    seats:5,
+    bags: 3,
+    doors:4,
+    automatic:true,
   },
   {
     id: 3,
@@ -44,6 +56,10 @@ export const cars: Car[] = [
     DayPrice: 380,
     TotalPrice: 1150,
     MileageKM:700,
+    seats:5,
+    bags: 3,
+    doors:4,
+    automatic:true,
   },
   {
     id: 4,
@@ -55,5 +71,9 @@ export const cars: Car[] = [
     DayPrice: 500,
     TotalPrice: 1500,
     MileageKM:900,
+    seats:5,
+    bags: 3,
+    doors:4,
+    automatic:true,
   },
 ];

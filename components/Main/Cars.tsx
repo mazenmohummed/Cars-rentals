@@ -15,6 +15,10 @@ const Cars = () => {
             Comment={car.Comment}
             DayPrice={car.DayPrice}
             TotalPrice={car.TotalPrice}
+            automatic= {car.automatic}
+            bags={car.bags}
+            doors={car.doors}
+             seats={car.seats}
           />
         </Link>
       ))}

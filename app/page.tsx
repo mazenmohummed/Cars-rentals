@@ -13,9 +13,9 @@ export default function Home() {
       <main className="">
        
        <ReservationBar/>
+       <Action/>
        <Img/>
        <Numbers/>
-       <Action/>
        <Reviews/>
        <Vision/>
        <Cities/>

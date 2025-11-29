@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link";
+import { User } from 'lucide-react';
+import { Luggage } from 'lucide-react';
+import { GiCarDoor } from "react-icons/gi";
 
 interface IProps {
 Name:string,
@@ -24,9 +27,24 @@ ImgUrl: string,
 Type: string,
 DayPrice: number,
 TotalPrice: number,
+seats:number,
+bags: number,
+doors:number,
+automatic:boolean,
 }
 
-export function CarCard({Name,Comment,ImgUrl,Type,DayPrice,TotalPrice,}: IProps) {
+export function CarCard({
+  Name,
+  Comment,
+  ImgUrl,
+  Type,
+  DayPrice,
+  TotalPrice,
+  seats,
+  bags,
+  doors,
+  automatic,
+}: IProps) {
   return (
  
     <div className="flex w-full max-w-md flex-col gap-6">
@@ -36,9 +54,10 @@ export function CarCard({Name,Comment,ImgUrl,Type,DayPrice,TotalPrice,}: IProps)
             <ItemTitle className="text-2xl">{Name}</ItemTitle>
             <ItemTitle className="text-2xl">{Type}</ItemTitle>
             <div>
-            <Badge variant="outline">one</Badge>
-            <Badge variant="outline">two</Badge>
-            <Badge variant="outline">three</Badge>
+            <Badge variant="outline"><User />{seats}</Badge>
+            <Badge variant="outline"><Luggage />{bags}</Badge>
+            <Badge variant="outline"><GiCarDoor />{doors}</Badge>
+            {automatic && <Badge>Automatic</Badge>}
             </div>
                  <div className="relative mx-auto w-full pb-4 ">
                     <img 
@@ -55,13 +74,13 @@ export function CarCard({Name,Comment,ImgUrl,Type,DayPrice,TotalPrice,}: IProps)
           <div className="flex items-end gap-2">
            {/* Daily price */}
              <div className="flex items-baseline gap-1">
-               <span className="text-sm font-medium text-gray-300">E£</span>
-               <span className="text-3xl font-bold text-white">{DayPrice}</span>
-               <span className="text-sm text-gray-300">/day</span>
+               <span className="text-sm font-medium ">E£</span>
+               <span className="text-3xl font-bold ">{DayPrice}</span>
+               <span className="text-sm ">/day</span>
              </div>
 
              {/* Total price */}
-             <span className="text-sm text-gray-400">E£ {TotalPrice} total</span>
+             <span className="text-sm ">E£ {TotalPrice} total</span>
 
                
 
