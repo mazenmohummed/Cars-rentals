@@ -4,6 +4,7 @@ import Image from "next/image";
 import AhmedCars from "@/img/AhmedCars.png"
 import {ReservationBar} from "@/components/Main/ReservationBar"
 import Link from "next/link";
+import AuthComponent from "../ui/login-btn";
 // import {
 //   NavigationMenu,
 //   NavigationMenuContent,
@@ -29,6 +30,7 @@ export function HeadBar(){
              <div className="flex items-center gap-4">
              <Globe/>
              <SquareUser />
+             <AuthComponent/>
              {/* <NavigationMenuItem className="hidden md:block">
           <NavigationMenuTrigger>Simple</NavigationMenuTrigger>
           <NavigationMenuContent>

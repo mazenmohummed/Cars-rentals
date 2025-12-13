@@ -1,197 +1,297 @@
-// // This is your Prisma schema file,
-// // learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
-// // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
 
-// generator client {
-//   provider = "prisma-client"
-//   output   = "../generated/prisma"
-// }
+// =====================
+// ACCOUNT / SESSION / TOKEN
+// =====================
 
-// datasource db {
-//   provider = "mongodb"
-//   url      = env("DATABASE_URL")
-// }
-// // =====================
-// // USER
-// // =====================
-// model User {
-//   id          String   @id @default(uuid()) @map("_id")
-//   firstName   String
-//   lastName    String
-//   email       String   @unique
-//   telephone   String
-//   password    String
+model Account {
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
-//   role        UserRole @default(CUSTOMER)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-//   reservations Reservation[]
-//   createdAt   DateTime @default(now())
-// }
+  @@unique([provider, providerAccountId])
+}
 
-// enum UserRole {
-//   CUSTOMER
-//   ADMIN
-//   STAFF
-// }
+model Session {
+  id           String   @id @default(cuid()) @map("_id")
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
-// // =====================
-// // CITY
-// // =====================
-// model City {
-//   id        String   @id @default(uuid())  @map("_id")
-//   name      String   @unique
+model VerificationToken {
+  id         String   @id @default(cuid()) @map("_id")
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-//   pickupReservations Reservation[] @relation("PickupCity")
-//   returnReservations Reservation[] @relation("ReturnCity")
-// }
+  @@unique([identifier, token])
+}
 
+// =====================
+// USER
+// =====================
 
-// // =====================
-// // CAR
-// // =====================
-// model Car {
-//   id              String   @id @default(uuid()) @map("_id")
-//   name            String
-//   type            String   // Sedan, SUV, etc
-//   image           String
-//   seats           Int
-//   bags            Int
-//   doors           Int
-//   automatic       Boolean
+model User {
+  id        String @id @default(cuid()) @map("_id")
+  firstName String
+  lastName  String
+  email     String @unique
+  telephone String
+  password  String
 
-//   mileagePlans    MileagePlan[]
-//   reservations    Reservation[]
+  role UserRole @default(CUSTOMER)
 
-//   createdAt       DateTime @default(now())
-// }
+  reservations Reservation[]
+  accounts     Account[]
+  sessions     Session[]
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-// // =====================
-// // MILEAGE PLAN
-// // =====================
-// model MileagePlan {
-//   id                String   @id @default(uuid()) @map("_id")
-//   name              String   // "Limited", "Unlimited"
-//   kmPerDay          Int?
-//   extraKmPrice      Float?
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  STAFF
+}
 
-//   carId             String
-//   car               Car      @relation(fields: [carId], references: [id])
+// =====================
+// CITY
+// =====================
 
-//   reservations      Reservation[]
-// }
+model City {
+  id   String @id @default(cuid()) @map("_id")
+  name String @unique
 
+  image       String
+  description String
 
-// // =====================
-// // EXTRA SERVICES
-// // =====================
-// model ExtraService {
-//   id        String   @id @default(uuid()) @map("_id")
-//   name      String   // Wifi Hotspot, Baby Seat
-//   price     Float
+  pickupReservations Reservation[] @relation("PickupCity")
+  returnReservations Reservation[] @relation("ReturnCity")
 
-//   reservations ReservationService[]
-// }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
+// =====================
+// CAR (UPDATED ✅)
+// =====================
 
-// // =====================
-// // RESERVATION
-// // =====================
-// model Reservation {
-//   id            String   @id @default(uuid()) @map("_id")
+model Car {
+  id String @id @default(cuid()) @map("_id")
 
-//   userId        String
-//   user          User     @relation(fields: [userId], references: [id])
+  name String
+  type String
 
-//   carId         String
-//   car           Car      @relation(fields: [carId], references: [id])
+  seats   Int?
+  gearbox Boolean? // true = automatic, false = manual
+  bags    Int?
+  doors   Int?
 
-//   pickupCityId  String
-//   pickupCity    City     @relation("PickupCity", fields: [pickupCityId], references: [id])
+  reservations Reservation[]
+  availability CarAvailability[]
+  mileagePlans MileagePlan[]
 
-//   returnCityId  String
-//   returnCity    City     @relation("ReturnCity", fields: [returnCityId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+}
 
-//   mileagePlanId String
-//   mileagePlan   MileagePlan @relation(fields: [mileagePlanId], references: [id])
+// =====================
+// MILEAGE PLAN
+// =====================
 
-//   startDate     DateTime
-//   endDate       DateTime
-//   reservationDate DateTime @default(now())
+enum MileageType {
+  LIMITED
+  UNLIMITED
+}
 
-//   totalPrice    Float
-//   quantity      Int        @default(1)
+model MileagePlan {
+  id String @id @default(cuid()) @map("_id")
 
-//   services      ReservationService[]
-// }
+  type         MileageType
+  pricePerDay  Int
+  kmPerDay     Int?
+  extraKmPrice Int?
 
+  carId String
+  car   Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
 
-// // =====================
-// // RESERVATION <-> SERVICE (MANY TO MANY)
-// // =====================
-// model ReservationService {
-//   id              String   @id @default(uuid()) @map("_id")
+  reservations Reservation[]
 
-//   reservationId   String
-//   reservation     Reservation @relation(fields: [reservationId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   serviceId       String
-//   service         ExtraService @relation(fields: [serviceId], references: [id])
-// }
+  @@unique([carId, type])
+}
 
-// // =====================
-// // Track payment status
-// // Support future gateways (Stripe, Paymob, etc.)
-// // One reservation → one payment (most common case)
-// // =====================
+// =====================
+// EXTRA SERVICES
+// =====================
 
-// model Payment {
-//   id              String   @id @default(uuid()) @map("_id")
+model ExtraService {
+  id    String @id @default(cuid()) @map("_id")
+  name  String
+  price Int
 
-//   reservationId   String   @unique
-//   reservation     Reservation @relation(fields: [reservationId], references: [id])
+  isActive Boolean @default(true)
 
-//   amount          Float
-//   method          PaymentMethod
-//   status          PaymentStatus
+  reservations ReservationService[]
 
-//   transactionRef  String?
-//   paidAt          DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-//   createdAt       DateTime @default(now())
-// }
+// =====================
+// RESERVATION
+// =====================
 
-// enum PaymentMethod {
-//   CASH
-//   CARD
-//   ONLINE
-// }
+model Reservation {
+  id String @id @default(cuid()) @map("_id")
 
-// enum PaymentStatus {
-//   PENDING
-//   PAID
-//   FAILED
-//   REFUNDED
-// }
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
 
-// // =====================
-// //Better performance than checking reservations each time
-// //Allows blocking cars (maintenance, issues, etc.)
-// // =====================
+  carId String
+  car   Car    @relation(fields: [carId], references: [id], onDelete: Restrict)
 
-// model CarAvailability {
-//   id        String   @id @default(uuid()) @map("_id")
+  pickupCityId String
+  pickupCity   City   @relation("PickupCity", fields: [pickupCityId], references: [id], onDelete: Restrict)
 
-//   carId     String
-//   car       Car      @relation(fields: [carId], references: [id])
+  returnCityId String
+  returnCity   City   @relation("ReturnCity", fields: [returnCityId], references: [id], onDelete: Restrict)
 
-//   startDate DateTime
-//   endDate   DateTime
+  mileagePlanId String
+  mileagePlan   MileagePlan @relation(fields: [mileagePlanId], references: [id], onDelete: Restrict)
 
-//   reason    String?  // Maintenance, Reserved manually
-//   isActive  Boolean  @default(true)
-// }
+  startDate       DateTime
+  endDate         DateTime
+  rentalDays      Int
+  reservationDate DateTime @default(now())
 
+  totalPrice   Int
+  address      Address
+  flightNumber String?
+
+  startOdometer Int?
+  endOdometer   Int?
+
+  extraKmUsed  Int?
+  extraKmTotal Int?
+
+  services ReservationService[]
+  payment  Payment?
+
+  status ReservationStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+type Address {
+  street String
+  status String
+  city   String
+  zip    String?
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  PICKED_UP
+  RETURNED
+  CANCELLED
+}
+
+// =====================
+// RESERVATION ↔ SERVICE
+// =====================
+
+model ReservationService {
+  id String @id @default(cuid()) @map("_id")
+
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+
+  serviceId String
+  service   ExtraService @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+
+  quantity   Int @default(1)
+  unitPrice  Int
+  totalPrice Int
+}
+
+// =====================
+// PAYMENT
+// =====================
+
+enum PaymentMethod {
+  CASH
+  CARD
+  ONLINE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model Payment {
+  id String @id @default(cuid()) @map("_id")
+
+  reservationId String      @unique
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+
+  amount Int
+  method PaymentMethod
+  status PaymentStatus
+
+  transactionRef String?
+  paidAt         DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =====================
+// CAR AVAILABILITY
+// =====================
+
+model CarAvailability {
+  id String @id @default(cuid()) @map("_id")
+
+  carId String
+  car   Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+
+  startDate DateTime
+  endDate   DateTime
+
+  reason   String?
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

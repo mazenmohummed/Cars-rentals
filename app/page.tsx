@@ -7,8 +7,10 @@ import { ReservationBar } from "@/components/Main/ReservationBar";
 import Reviews from "@/components/Main/Reviews";
 import Vision from "@/components/Main/Vision";
 
+
 export default function Home() {
   return (
+
     <div className="">
       <main className="">
        

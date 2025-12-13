@@ -31,6 +31,8 @@ const page = ({}: IProps) => {
 
             <Input type="text" placeholder="Address" className="mt-4" />
 
+            <Input type="text" placeholder="flight number" className="mt-4" />
+
             <Link className="flex mx-auto items-center my-6" href={`/cars/${id}/services/personalDetails/confirme`}>
           <Button className="flex mx-auto items-center w-40 my-6" children="Next "/>
           </Link>
