@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     return new Response('Missing svix headers', { status: 400 })
   }
 
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!)
+  const wh = new Webhook(process.env.CLERK_WEBHOOK_SIGNING_SECRET!)
 
   let event: any
   try {
@@ -30,8 +30,8 @@ export async function POST(req: Request) {
   // 👇 Handle user.created
   if (event.type === 'user.created') {
     const user = event.data
-
-    await prisma.user.create({
+    try { 
+        await prisma.user.create({
       data: {
         clerkId: user.id,
         email: user.email_addresses[0].email_address,
@@ -40,6 +40,12 @@ export async function POST(req: Request) {
         telephone: user.phone_numbers?.[0]?.phone_number ?? null,
       },
     })
+        
+    } catch (error) {
+        console.error('Erorr:filed to store event in the database',error)
+        return new Response('Erorr:filed to store event in the database', { status: 500 })
+    }
+   
   }
 
   return new Response('OK', { status: 200 })
