@@ -65,7 +65,7 @@ export default function ReserveCard({
 
             <ItemTitle className="text-2xl">{Name}</ItemTitle>
             <ItemTitle className="text-2xl">{Type}</ItemTitle>
-            <div>
+            <div className="flex gap-2">
             <Badge variant="outline"><User />{seats}</Badge>
             <Badge variant="outline"><Luggage />{bags}</Badge>
             <Badge variant="outline"><GiCarDoor />{doors}</Badge>

@@ -23,6 +23,7 @@ model User {
   role UserRole @default(CUSTOMER)
 
   reservations Reservation[]
+  reviews      Review[] // relation to reviews
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -67,8 +68,11 @@ model Car {
   bags    Int?
   doors   Int?
 
+  mainImage String // ✅ car images (URLs)
+  images    String[]
+
   reservations Reservation[]
-  availability CarAvailability[]
+  availability CarUnavailability[]
   mileagePlans MileagePlan[]
 
   createdAt DateTime @default(now())
@@ -235,10 +239,10 @@ model Payment {
 }
 
 // =====================
-// CAR AVAILABILITY
+// CAR UNAVAILABILITY
 // =====================
 
-model CarAvailability {
+model CarUnavailability {
   id String @id @default(cuid()) @map("_id")
 
   carId String
@@ -247,9 +251,35 @@ model CarAvailability {
   startDate DateTime
   endDate   DateTime
 
-  reason   String?
-  isActive Boolean @default(true)
+  reason String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([carId])
+}
+
+// =====================
+// REVIEW
+// =====================
+
+model Review {
+  id String @id @default(cuid()) @map("_id")
+
+  // Relation to User
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Snapshot user data
+  avatar    String?
+  firstName String?
+  lastName  String?
+
+  stars       Int // 1 → 5
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }

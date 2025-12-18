@@ -1,15 +1,25 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { SessionProvider } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 
-export function Providers({ children, session }: { children: ReactNode; session?: any }) {
+type ProvidersProps = {
+  children: React.ReactNode;
+};
+
+export function Providers({ children }: ProvidersProps) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <SessionProvider session={session}>
+    <ClerkProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
         {children}
-      </SessionProvider>
-    </ThemeProvider>
+        <Toaster position="top-right" />
+      </ThemeProvider>
+    </ClerkProvider>
   );
 }

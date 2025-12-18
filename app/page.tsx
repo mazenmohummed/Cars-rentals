@@ -1,6 +1,5 @@
 import Action from "@/components/Main/Action";
 import Cities from "@/components/Main/Cities";
-import Footer from "@/components/Main/Footer";
 import Img from "@/components/Main/Img";
 import { Numbers } from "@/components/Main/Numbers"
 import { ReservationBar } from "@/components/Main/ReservationBar";

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { User } from 'lucide-react';
 import { Luggage } from 'lucide-react';
 import { GiCarDoor } from "react-icons/gi";
+import { Button } from "./button";
 
 interface IProps {
 Name:string,
@@ -22,7 +23,7 @@ doors:number,
 automatic:boolean,
 }
 
-export function CarCard({
+export function AdminCarCard({
   Name,
   Comment,
   ImgUrl,
@@ -73,6 +74,10 @@ export function CarCard({
 
                
 
+           </div>
+           <div className="flex gap-4 my-4 ">
+           <Button className="flex-1" children="Update car"/>  
+           <Button className="flex-1" children="Delete car"/>  
            </div>
 
         </ItemContent>
