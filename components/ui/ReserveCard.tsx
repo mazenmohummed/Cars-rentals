@@ -21,18 +21,19 @@ import { GiCarDoor } from "react-icons/gi";
 
 
 interface IProps {
-Name:string,
-Comment:string,
-ImgUrl: string,
-Type: string,
-DayPrice: number,
-TotalPrice: number,
-MileageKM:number,
-Id: string,
-seats:number,
-bags: number,
-doors:number,
-automatic:boolean,
+ Name: string;
+  Comment: string;
+  ImgUrl: string;
+  Type: string;
+  unlimitedPrice: number | null;
+  limitedPrice: number | null;
+  MileageKM: number | null;
+  Id: string;
+  seats: number;
+  bags: number;
+  doors: number;
+  automatic: boolean;
+  extraKmPrice:number | null;
 }
 
 
@@ -42,18 +43,23 @@ export default function ReserveCard({
   Type, 
   ImgUrl, 
   Comment, 
-  DayPrice,
-  TotalPrice,
+  unlimitedPrice,
+  limitedPrice,
   MileageKM,
   Id,
   seats,
   bags,
   doors,
   automatic,
+  extraKmPrice
  }: IProps ) {
   
   const [Mileage, setMileage] = useState<string | null>(null);
-  console.log(Mileage)
+  
+
+const dayPrice =
+  Mileage === "unlimited" ? unlimitedPrice : limitedPrice;
+
   
   return (
 
@@ -83,16 +89,17 @@ export default function ReserveCard({
           <ItemDescription>
             {Comment}
           </ItemDescription>
-          <div className="flex items-end gap-2">
+          
            {/* Daily price */}
+          <div className="flex items-end gap-2">
              <div className="flex items-baseline gap-1">
                <span className="text-sm font-medium ">E£</span>
-               <span className="text-3xl font-bold ">{DayPrice}</span>
+               <span className="text-3xl font-bold ">{dayPrice}</span>
                <span className="text-sm ">/day</span>
              </div>
-
+              
              {/* Total price */}
-             <span className="text-sm ">E£ {TotalPrice} total</span>
+             <span className="text-sm ">E£ {0} total</span>
 
                
 
@@ -120,7 +127,7 @@ export default function ReserveCard({
             <ItemContent>
             <ItemTitle className="text-2xl">{MileageKM} KM</ItemTitle>
             <ItemDescription>
-            +EGP 18.88 / for every additional km
+            +EGP {extraKmPrice} / for every additional km
           </ItemDescription>
             </ItemContent>
           </Item>

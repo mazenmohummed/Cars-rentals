@@ -14,15 +14,61 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { z } from "zod";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
 
 // Zod schema
-const mileagePlanSchema = z.object({
-  carId: z.string().nonempty("Car ID is required"),
-  type: z.enum(["LIMITED", "UNLIMITED"]),
-  pricePerDay: z.number().min(0, "Price per day must be >= 0"),
-  kmPerDay: z.number().min(0).optional(),
-  extraKmPrice: z.number().min(0).optional(),
-});
+
+
+
+export const mileagePlanSchema = z
+  .object({
+    carId: z.string().min(1, "Car ID is required"),
+
+    type: z.enum(["LIMITED", "UNLIMITED"], {
+      message: "Mileage plan type is required",
+    }),
+
+    pricePerDay: z
+      .number()
+      .min(1, "Price per day must be greater than 0"),
+
+    kmPerDay: z.number().optional(),
+
+    extraKmPrice: z.number().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.type === "LIMITED") {
+      if (data.kmPerDay == null || Number.isNaN(data.kmPerDay)) {
+        ctx.addIssue({
+          path: ["kmPerDay"],
+          message: "Km per day is required for LIMITED plan",
+          code: "custom",
+        });
+      }
+
+      if (data.extraKmPrice == null || Number.isNaN(data.extraKmPrice)) {
+        ctx.addIssue({
+          path: ["extraKmPrice"],
+          message: "Extra km price is required for LIMITED plan",
+          code: "custom",
+        });
+      }
+    }
+  });
+
+
 
 interface MileagePlanFormProps {
   carId: string;
@@ -30,11 +76,13 @@ interface MileagePlanFormProps {
 
 export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
   const [type, setType] = useState<"LIMITED" | "UNLIMITED">("LIMITED");
-  const [pricePerDay, setPricePerDay] = useState<number>(0);
+  const [pricePerDay, setPricePerDay] = useState<number | "">("");
   const [kmPerDay, setKmPerDay] = useState<number | null>(null);
   const [extraKmPrice, setExtraKmPrice] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const [open, setOpen] = useState(false);
 
  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +93,7 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
     const data = {
       carId,
       type,
-      pricePerDay,
+      pricePerDay: Number(pricePerDay),
       kmPerDay: type === "LIMITED" ? kmPerDay : undefined,
       extraKmPrice: type === "LIMITED" ? extraKmPrice : undefined,
     };
@@ -74,8 +122,11 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
 
       if (!res.ok) throw new Error("Failed to add mileage plan");
 
-      toast.success("Mileage Plan added!");
-      setPricePerDay(0);
+      toast.success("Mileage Plan added 🚗");
+      setOpen(false);
+
+
+      setPricePerDay("");
       setKmPerDay(null);
       setExtraKmPrice(null);
     } catch (err: any) {
@@ -85,7 +136,19 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
     }
   };
   return (
-    <form className="space-y-4 p-4 border rounded-md" onSubmit={handleSubmit}>
+ 
+     <Sheet open={open} onOpenChange={setOpen} >
+      <SheetTrigger asChild>
+        <Button variant="outline" type="button">Add Mileage Plan</Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Add Mileage Plan</SheetTitle>
+          <SheetDescription>
+            Make Add your Mileage Plan. Click save when you&apos;re done.
+          </SheetDescription>
+        </SheetHeader>
+        <form className="space-y-4 p-4 border rounded-md" onSubmit={handleSubmit}>
         <Select
           value={type}
           onValueChange={(value) =>
@@ -111,7 +174,7 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
         <input
           type="number"
           value={pricePerDay}
-          onChange={(e) => setPricePerDay(Number(e.target.value))}
+          onChange={(e) => setPricePerDay(e.target.value === "" ? "" : Number(e.target.value))}
           className="border px-2 py-1 rounded-md w-full"
           min={0}
           required
@@ -154,10 +217,20 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
           </div>
         </>
       )}
+       <div className="flex gap-4 my-4 ">
 
-      <Button type="submit" disabled={loading}>
+      <Button className="flex-1" type="submit" disabled={loading}>
         {loading ? "Adding..." : "Add Mileage Plan"}
       </Button>
+       </div>
     </form>
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button variant="outline">Close</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+    
   );
 };

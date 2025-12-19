@@ -14,7 +14,7 @@ async function main() {
 
 // )
 await prisma.user.update({
-  where: { email: "mazn39998@gmail.com" },
+  where: { email: "ahmedmkamel603@gmail.com" },
   data: { role: "ADMIN" },
 })
 }

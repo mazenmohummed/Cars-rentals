@@ -136,15 +136,15 @@ export function AddCar() {
                   <p className="text-sm text-red-500">{errors.type}</p>
                 )}
           </div>
-          <IntInput label="Doors" value={doors ?? 0} onChange={setDoors}/>
+          <IntInput label="Doors" value={doors} onChange={setDoors}/>
           {errors.doors && (
              <p className="text-sm text-red-500">{errors.doors}</p>
            )}
-          <IntInput label="Seats" value={seats ?? 0} onChange={setSeats}/>
+          <IntInput label="Seats" value={seats} onChange={setSeats}/>
           {errors.seats && (
              <p className="text-sm text-red-500">{errors.doors}</p>
            )}
-          <IntInput label="bags" value={bags ?? 0} onChange={setBags} />
+          <IntInput label="bags" value={bags } onChange={setBags} />
           {errors.bags && (
              <p className="text-sm text-red-500">{errors.doors}</p>
            )}
