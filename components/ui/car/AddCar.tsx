@@ -13,15 +13,15 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { CarType } from "./CarType"
-import { IntInput } from "./IntInput"
+import { IntInput } from "../IntInput"
 import { useState } from "react"
-import { ItemContent, ItemTitle } from "./item"
-import { Switch } from "./switch"
-import { ImageUpload } from "./ImageUpload"
+import { ItemContent, ItemTitle } from "../item"
+import { Switch } from "../switch"
+import { ImageUpload } from "../ImageUpload"
 import { UploadDropzone } from "@/lib/uploadthing";
-import { AddMileagePlan } from "./AddMileagePlan"
+import { AddMileagePlan } from "../mileage/AddMileagePlan"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {toast, Toaster} from "react-hot-toast"
+import {toast, } from "react-hot-toast"
 import { carSchema } from "@/lib/validators/car";
 
 
@@ -101,7 +101,7 @@ export function AddCar() {
 
   return (
     <>
-    <Toaster position="top-center" />
+
     <Sheet  open={open} onOpenChange={setOpen}>
        
       <SheetTrigger asChild>
@@ -162,6 +162,16 @@ export function AddCar() {
              onChange={setImages}
              maxImages={5}
            /> */}
+             <Label>Car Image</Label>
+             {images && (
+                  <div className="relative aspect-video w-full overflow-hidden rounded-lg border">
+                    <img 
+                      src={images[0]} 
+                      alt="Preview" 
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
            <UploadDropzone
               endpoint="carImage"
               onClientUploadComplete={(res) => {

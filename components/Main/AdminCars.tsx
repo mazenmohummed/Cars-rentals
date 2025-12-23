@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { AdminCarCard } from "../ui/AdminCarCard";
+import { AdminCarCard } from "../ui/car/AdminCarCard";
 
 const AdminCars = async () => {
   // Fetch cars with related mileage plans
@@ -15,9 +15,14 @@ const AdminCars = async () => {
           const limitedPlan = car.mileagePlans.find(
             (plan) => plan.type === "LIMITED"
           );
+          const unlimitedPlan = car.mileagePlans.find(p => p.type === "UNLIMITED");
 
           return (
             <AdminCarCard
+              limitedPrice={limitedPlan?.pricePerDay ?? 0}
+              unlimitedPrice={unlimitedPlan?.pricePerDay ?? 0}
+              mileageInitialData={limitedPlan || unlimitedPlan || undefined}
+              carInitialData={car}
               key={car.id}
               carId={car.id}
               Name={car.name}

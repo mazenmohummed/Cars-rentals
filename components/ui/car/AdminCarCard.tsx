@@ -8,11 +8,19 @@ import { Badge } from "@/components/ui/badge"
 import { User } from 'lucide-react';
 import { Luggage } from 'lucide-react';
 import { GiCarDoor } from "react-icons/gi";
-import { Button } from "./button";
-import { AddMileagePlan } from "./AddMileagePlan";
-import { AddReservation } from "./AddReservation";
+import { Button } from "../button";
+import { AddMileagePlan } from "../mileage/AddMileagePlan";
+import { AddReservation } from "../reservation/AddReservation";
+import { ICarData, UpdateCar } from "./UpdateCar";
+import {IMileagePlanData, UpdateMileagePlan} from "../mileage/UpdateMileagePlan";
+
+
 
 interface IProps {
+carInitialData: ICarData,
+mileageInitialData?:IMileagePlanData,
+limitedPrice:number,
+unlimitedPrice:number,
 carId:string,  
 Name:string,
 Comment:string,
@@ -26,7 +34,13 @@ doors:number,
 automatic:boolean,
 }
 
+
+
 export function AdminCarCard({
+  limitedPrice,
+  unlimitedPrice,
+  carInitialData,
+  mileageInitialData,
   carId,
   Name,
   Comment,
@@ -39,6 +53,8 @@ export function AdminCarCard({
   doors,
   automatic,
 }: IProps) {
+
+  
   return (
  
     <div className="flex w-full max-w-md flex-col gap-6">
@@ -69,24 +85,27 @@ export function AdminCarCard({
            {/* Daily price */}
              <div className="flex items-baseline gap-1">
                <span className="text-sm font-medium ">E£</span>
-               <span className="text-3xl font-bold ">{DayPrice}</span>
+               <span className="text-3xl font-bold ">{limitedPrice}</span>
                <span className="text-sm ">/day</span>
              </div>
 
              {/* Total price */}
-             <span className="text-sm ">E£ {TotalPrice} total</span>
+             <span className="text-sm ">E£ {unlimitedPrice} Umlimited Price</span>
+
 
                
 
            </div>
            <div className="flex gap-4 my-4 ">
-           <Button className="flex-1" children="Update car"/>  
-           <Button className="flex-1" children="Delete car"/> 
+           <UpdateCar carId={carId} initialData={carInitialData}/> 
+
+
            </div>
            <div className="flex gap-4 my-4 ">
             <AddMileagePlan carId={carId}/> 
            <AddReservation carId={carId}/>
            </div>
+           <UpdateMileagePlan limitedPrice={limitedPrice} unlimitedPrice={unlimitedPrice} carId={carId} initialData={mileageInitialData}/>
 
         </ItemContent>
       </Item>

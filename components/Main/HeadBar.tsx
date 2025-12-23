@@ -18,7 +18,7 @@ export function HeadBar(){
     <div >
 
         <nav className=" flex pt-[6] justify-center ">
-            <div className="flex items-center justify-between px-6 w-full md:w-5/6 xl:w-5/6  lg:w-5/6 ">
+            <div className="flex items-center justify-between px-6 w-full ">
              <div className="flex items-center ">
              <Link href="/">
              <h2>Cars</h2>

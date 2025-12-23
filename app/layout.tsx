@@ -4,6 +4,7 @@ import "./globals.css";
 import { HeadBar } from "@/components/Main/HeadBar";
 import Footer from "@/components/Main/Footer";
 import { Providers } from "./Providers";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,10 +28,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased  mx-auto  justify-center w-full md:w-5/6 lg:w-5/6 xl:w-5/6`}>
         <Providers>
           <HeadBar />
           {children}
+          <Toaster position="top-center" />
           <Footer />
         </Providers>
       </body>

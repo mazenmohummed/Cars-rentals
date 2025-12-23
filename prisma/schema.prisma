@@ -46,6 +46,8 @@ model City {
   image       String
   description String
 
+  transFee Float @default(0)
+
   pickupReservations Reservation[] @relation("PickupCity")
   returnReservations Reservation[] @relation("ReturnCity")
 

@@ -1,15 +1,16 @@
-import Cars  from "@/components/Main/Cars";
+import Cars from "@/components/Main/Cars";
 
-
-export default function CarPage({ params }: { params: { id: string } }) {
-  const carId = Number(params.id);
-  
-
+export default async function CarPage({ 
+  searchParams 
+}: { 
+  searchParams: Promise<{ from?: string; to?: string }> 
+}) {
+  const resolvedParams = await searchParams;
 
   return (
-    <div className="flex justify-center mt-10">
-      < Cars />
+    <div className="flex flex-col items-center mt-10">
+      <h1 className="text-2xl font-bold mb-6">Available Vehicles</h1>
+      <Cars searchParams={resolvedParams} />
     </div>
   );
 }
-

@@ -4,12 +4,18 @@ import Cities from "@/components/Main/Cities";
 import Img from "@/components/Main/Img";
 import { Numbers } from "@/components/Main/Numbers"
 import { ReservationBar } from "@/components/Main/ReservationBar";
-import Reviews from "@/components/Main/Reviews";
+
 import Vision from "@/components/Main/Vision";
 import { Button } from "@/components/ui/button";
+import { ReviewsSection } from "@/components/ui/reviews/ReviewsSection";
 
-export default async function AdminDashboard() {
+interface HomeProps {
+  searchParams: Promise<{ sort?: string }>;
+}
+
+export default async function AdminDashboard({ searchParams }: HomeProps) {
   await requireAdmin()
+  const resolvedParams = await searchParams;
 
     return (
     <div>
@@ -24,7 +30,7 @@ export default async function AdminDashboard() {
              <Img/>
              <Numbers/>
              <Button className="flex mx-auto my-4" children={<a href="/admin/reviews">Manage Reviews</a>}/>
-             <Reviews/>
+             <ReviewsSection searchParams={resolvedParams}/>
              <Vision/>
              <Button className="flex mx-auto my-4" children={<a href="/admin/cities">Manage Cities</a>}/>
              <Cities/>

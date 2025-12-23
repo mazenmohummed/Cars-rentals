@@ -26,6 +26,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { ScrollArea } from "../scroll-area";
 
 
 // Zod schema
@@ -139,9 +140,10 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
  
      <Sheet open={open} onOpenChange={setOpen} >
       <SheetTrigger asChild>
-        <Button variant="outline" type="button">Add Mileage Plan</Button>
+        <Button type="button">Add Mileage Plan</Button>
       </SheetTrigger>
       <SheetContent>
+        <ScrollArea>
         <SheetHeader>
           <SheetTitle>Add Mileage Plan</SheetTitle>
           <SheetDescription>
@@ -224,11 +226,13 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
       </Button>
        </div>
     </form>
+    
         <SheetFooter>
           <SheetClose asChild>
             <Button variant="outline">Close</Button>
           </SheetClose>
         </SheetFooter>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
     

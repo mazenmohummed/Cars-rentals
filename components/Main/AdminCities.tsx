@@ -1,0 +1,37 @@
+import { prisma } from "@/lib/prisma";
+import { AdminCarCard } from "../ui/car/AdminCarCard";
+import { CityCard } from "../ui/city/CityCard";
+import { AdminCityCard } from "../ui/city/AdminCitycard";
+import Cities from "./Cities";
+
+const AdminCities = async () => {
+  // Fetch cars with related mileage plans
+  const city = await prisma.city.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
+  return (
+    <div className="flex pt-[6] justify-center">
+      <div className="flex flex-wrap p-2 justify-center w-full md:w-5/6 lg:w-5/6 xl:w-5/6 gap-3">
+       {city.map((city) => {
+
+          return (
+           <AdminCityCard 
+           cityId={city.id}
+           initialData={{
+              id: city.id,
+              name: city.name,
+              description: city.description,
+              image: city.image,
+              transFee: city.transFee
+            }}
+            key={city.id}
+             />
+          );
+})}
+      </div>
+    </div>
+  );
+};
+
+export default AdminCities;

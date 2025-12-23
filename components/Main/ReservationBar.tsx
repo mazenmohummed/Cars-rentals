@@ -10,26 +10,37 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ComboboxDemo } from "@/components/HeadBar/ComboboxDemo"
+import { CityPicker } from "@/components/HeadBar/ComboboxDemo"
 import { Fragment } from "react/jsx-runtime"
-import { Calendar22 } from "@/components/HeadBar/Calendar22"
+import {  CarSearchForm } from "@/components/HeadBar/CarSearchForm"
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 
-export function ReservationBar() {
+export async function ReservationBar() {
+  // Fetch cities from database
+  const citiesDb = await prisma.city.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+    orderBy: { name: "asc" }
+  });
+
+  // Format them for the CityPicker (value/label)
+  const formattedCities = citiesDb.map(city => ({
+    value: city.id,
+    label: city.name
+  }));
   return (
       <div className="flex w-full items-center justify-between"> 
-       <div className="relative mx-auto w-full md:w-5/6 lg:w-5/6 xl:w-5/6  ">
+       <div className="relative mx-auto w-full  ">
         
     <div className="px-2">
     <Card className="w-full mx-auto mt-12 h-auto md:w-5/6 xl:w-5/6  lg:w-5/6">
           <div className="flex gap-5 h-auto flex-wrap mx-auto justify-center items-center">
-          <ComboboxDemo Title="Pick Up"/>
-          <ComboboxDemo Title="Return"/>
-          <Calendar22 Title="From"/>
-          <Calendar22 Title="To"/>
-          <Link href="/cars">
-          <Button children="Avilabile Cars"/>
-          </Link>
+          <CityPicker  cities={formattedCities} title="Pick up"/>
+          <CityPicker cities={formattedCities} title="return"/>
+          <CarSearchForm  />
           </div> 
           
     </Card>

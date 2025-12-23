@@ -2,7 +2,7 @@
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { Toaster } from "react-hot-toast";
+
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -18,7 +18,6 @@ export function Providers({ children }: ProvidersProps) {
         disableTransitionOnChange
       >
         {children}
-        <Toaster position="top-right" />
       </ThemeProvider>
     </ClerkProvider>
   );

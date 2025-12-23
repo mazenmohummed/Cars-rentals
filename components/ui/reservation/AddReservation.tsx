@@ -17,7 +17,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Calendar22 } from "../HeadBar/Calendar22";
+import { Calendar22 } from "../../HeadBar/CarSearchForm";
 
 // Zod Schema
 export const AddReservationSchema = z.object({
@@ -103,7 +103,7 @@ export const AddReservation = ({ carId }: AddReservationProps) => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" type="button">Add Reservation</Button>
+        <Button type="button">Add Reservation</Button>
       </SheetTrigger>
 
       <SheetContent>

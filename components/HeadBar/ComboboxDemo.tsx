@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -19,37 +18,22 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-const frameworks = [
-  {
-    value: "Cairo",
-    label: "Cairo",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
-
-interface IProps {
-Title:string ,
-
+// Define the shape of a City
+interface CityOption {
+  value: string; // This will be the city ID
+  label: string; // This will be the city Name
 }
 
-export function ComboboxDemo({Title}: IProps) {
+interface IProps {
+  title: string;
+  cities: CityOption[]; // Cities passed from Prisma
+  onChange?: (value: string) => void;
+  defaultValue?: string;
+}
+
+export function CityPicker({ title, cities, onChange, defaultValue }: IProps) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+  const [value, setValue] = React.useState(defaultValue || "")
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -58,34 +42,36 @@ export function ComboboxDemo({Title}: IProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-full justify-between"
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : Title}
-          <ChevronsUpDown className="opacity-50" />
+            ? cities.find((city) => city.value === value)?.label
+            : title}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-full p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." className="h-9" />
+          <CommandInput placeholder="Search city..." className="h-9" />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No city found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {cities.map((city) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={city.value}
+                  value={city.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
+                    const newValue = currentValue === value ? "" : currentValue;
+                    setValue(newValue);
+                    setOpen(false);
+                    if (onChange) onChange(newValue);
                   }}
                 >
-                  {framework.label}
+                  {city.label}
                   <Check
                     className={cn(
-                      "ml-auto",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      "ml-auto h-4 w-4",
+                      value === city.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>

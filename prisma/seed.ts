@@ -13,10 +13,14 @@ async function main() {
  //   },
 
 // )
-await prisma.user.update({
-  where: { email: "ahmedmkamel603@gmail.com" },
-  data: { role: "ADMIN" },
-})
+// This will delete any reviews where the user no longer exists
+await prisma.review.deleteMany({
+  where: {
+    user: {
+      isNot: {}
+    }
+  }
+});
 }
 
 main()

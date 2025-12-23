@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import ReserveCard from "@/components/ui/ReserveCard";
+import ReserveCard from "@/components/ui/reservation/ReserveCard";
 
 interface PageProps {
   params: {
