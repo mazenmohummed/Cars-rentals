@@ -2,17 +2,19 @@ import { prisma } from "@/lib/prisma";
 import ReserveCard from "@/components/ui/reservation/ReserveCard";
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ 
+    from?: string; 
+    to?: string; 
+    pickup?: string; 
+    return?: string; 
+  }>;
 }
 
-export default async function CarDetailsPage({ params }: PageProps) {
-
-  
-  console.log("PARAMS:", params); // ← TEMP DEBUG
+export default async function CarDetailsPage({ params, searchParams }: PageProps) {
 
   const { id } = await params;
+  const sParams = await searchParams;
 
   const car = await prisma.car.findUnique({
     where: { id },
@@ -21,6 +23,16 @@ export default async function CarDetailsPage({ params }: PageProps) {
 
   if (!car) {
     return <h1>Car not found 😔</h1>;
+  }
+
+  // Fetch transport fees for the selected cities
+  let cityFees = 0;
+  if (sParams.pickup || sParams.return) {
+    const cities = await prisma.city.findMany({
+      where: { id: { in: [sParams.pickup, sParams.return].filter(Boolean) as string[] } },
+      select: { transFee: true }
+    });
+    cityFees = cities.reduce((acc, city) => acc + (city.transFee || 0), 0);
   }
 
   const unlimitedPlan = car.mileagePlans.find(p => p.type === "UNLIMITED");
@@ -37,13 +49,15 @@ export default async function CarDetailsPage({ params }: PageProps) {
       bags={car.bags ?? 0}
       doors={car.doors ?? 0}
       automatic={car.gearbox ?? false}
-      // DayPrice={
-      //   car.mileagePlans.find(p => p.type === "UNLIMITED")?.pricePerDay ?? 0
-      // }
+      fromDate={sParams.from}
+      toDate={sParams.to}
+      cityFees={cityFees}
       unlimitedPrice={unlimitedPlan?.pricePerDay ?? null}
     limitedPrice={limitedPlan?.pricePerDay ?? null}
     MileageKM={limitedPlan?.kmPerDay ?? null}
     extraKmPrice={limitedPlan?.extraKmPrice ?? null}
+    pickupCity={sParams.pickup}
+    returnCity={sParams.return}
     />
   );
 }

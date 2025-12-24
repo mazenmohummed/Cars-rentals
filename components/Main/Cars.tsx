@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link"
 import { differenceInDays, parseISO, startOfDay } from "date-fns";
 
-interface CarsProps {
+export interface CarsProps {
   searchParams: { 
     from?: string; 
     to?: string; 
@@ -24,17 +24,25 @@ const Cars = async ({ searchParams }: CarsProps) => {
     ? Math.max(differenceInDays(endDate, startDate), 1) 
     : 1;
 
-  // 2. Fetch City Fees if cities are selected
-  let cityFees = 0;
-  if (pickupCityId || returnCityId) {
-    const cities = await prisma.city.findMany({
-      where: {
-        id: { in: [pickupCityId || "", returnCityId || ""].filter(Boolean) }
-      },
-      select: { transFee: true }
-    });
-    cityFees = cities.reduce((acc, city) => acc + (city.transFee || 0), 0);
-  }
+      // 2. Fetch City Fees specifically for Pickup and Return
+      let totalCityFees = 0;
+
+      if (pickupCityId || returnCityId) {
+        const selectedCities = await prisma.city.findMany({
+          where: {
+            id: { in: [pickupCityId, returnCityId].filter((id): id is string => !!id) }
+          },
+          select: { id: true, transFee: true }
+        });
+
+        // Find the specific fees
+        const pickupFee = selectedCities.find(c => c.id === pickupCityId)?.transFee || 0;
+        const returnFee = selectedCities.find(c => c.id === returnCityId)?.transFee || 0;
+
+        // Add them together
+        totalCityFees = pickupFee + returnFee;
+      }
+
 
   // 3. Fetch Available Cars
   const cars = await prisma.car.findMany({
@@ -64,7 +72,7 @@ const Cars = async ({ searchParams }: CarsProps) => {
           const dailyPrice = limitedPlan?.pricePerDay ?? 0;
           
           // Total = (Daily Price * Days) + City Transport Fees
-          const totalCalculation = (dailyPrice * rentalDays) + cityFees;
+          const totalCalculation = (dailyPrice * rentalDays) + totalCityFees;
 
           return (
             <Link 

@@ -1,163 +1,216 @@
-// components/ReserveCard.jsx
 "use client";
 
-import React from "react";
-
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item"
-import Link from "next/link";
-import { useState } from "react";
-import { Calendar22 } from "../HeadBar/CarSearchForm";
-import { Label } from "@/components/ui/label"
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableFooter,
-} from "@/components/ui/table"
-import { User } from 'lucide-react';
-import { Luggage } from 'lucide-react';
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { Button } from "./button";
+import { Item, ItemContent, ItemDescription, ItemTitle } from "./item";
+import { Badge } from "./badge";
+import { User, Luggage } from "lucide-react";
+import { Label } from "./label";
+import { 
+  Table, 
+  TableBody, 
+  TableCaption, 
+  TableCell, 
+  TableFooter, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "./table";
+import { differenceInDays, parseISO } from "date-fns";
+import { useState, useEffect } from "react";
 import { GiCarDoor } from "react-icons/gi";
-import { TbLuggage } from "react-icons/tb";
 
-
-interface IProps {
-Name:string | undefined,
-Comment:string | undefined,
-ImgUrl: string | undefined,
-Type: string | undefined,
-DayPrice: number | undefined,
-TotalPrice: number | undefined,
-seats:number | undefined,
-bags: number | undefined,
-doors:number | undefined,
-automatic:boolean | undefined,
+// Define a proper interface for the incoming props
+interface ConfirmCardProps {
+  reservationData: any; // The body you will send to the API
+  Name: string;
+  Type: string;
+  ImgUrl: string;
+  Comment: string;
+  unlimitedPrice: number | null;
+  limitedPrice: number | null;
+  MileageKM: number | null;
+  Id: string;
+  seats: number;
+  bags: number;
+  doors: number;
+  automatic: boolean;
+  extraKmPrice: number | null;
+  fromDate: string;
+  toDate: string;
+  cityFees: number;
+  dayPrice: number;
+  selectedServices: { name: string; price: number }[];
+  returnStation: string;
+  checkInDate: string; // usually same as toDate
+  pickupStation: string;
+  checkOutDate: string; // usually same as fromDate
+  selectedMileageType: "unlimited" | "limited"; 
 }
 
-
-
-export default function ConfirmCard ({ 
+export default function ConfirmCard({
+  reservationData,
   Name,
-  Type, 
-  ImgUrl, 
-  Comment, 
-  DayPrice, 
-  TotalPrice,
+  Type,
+  ImgUrl,
+  Comment,
+  unlimitedPrice,
+  limitedPrice,
+  MileageKM,
+  Id,
   seats,
   bags,
   doors,
-  automatic, }: IProps ) {
-  
-  const [Mileage, setMileage] = useState<string | null>(null);
-  console.log(Mileage)
-  
+  automatic,
+  extraKmPrice,
+  fromDate,
+  toDate,
+  cityFees,
+  dayPrice,
+  selectedServices,
+  returnStation,
+  checkInDate,
+  pickupStation,
+  checkOutDate,
+  selectedMileageType
+}: ConfirmCardProps) {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 1. Calculate Days
+  const rentalDays = (fromDate && toDate)
+    ? Math.max(differenceInDays(parseISO(toDate), parseISO(fromDate)), 1)
+    : 1;
+
+  // 2. Determine displayed price based on the plan chosen in previous steps
+  const currentDailyPrice = selectedMileageType === "unlimited" ? (unlimitedPrice ?? 0) : (limitedPrice ?? 0);
+
+  // 3. Totals Calculation
+  const rentalTotal = rentalDays * dayPrice;
+  const servicesTotal = selectedServices.reduce((sum, s) => sum + s.price, 0);
+  const grandTotal = rentalTotal + servicesTotal + cityFees;
+
+  const handleConfirm = async () => {
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...reservationData,
+          totalPrice: grandTotal // Ensure API gets the final calculated total
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to book");
+
+      toast.success("Reservation Successful!");
+      router.push("/profile/reservations");
+    } catch (err) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-
-    <div className="flex w-full md:w-5/6 xl:w-4/6  lg:w-5/6 mx-auto h-auto ">
-      <Item variant="outline" className=" w-full flex h-auto">
-        <div className="flex w-full  flex-wrap">
-
-        <ItemContent className="m-2">
-
+    <div className="flex w-full md:w-5/6 xl:w-4/6 lg:w-5/6 mx-auto h-auto">
+      <Item variant="outline" className="w-full flex h-auto">
+        <div className="flex w-full flex-wrap">
+          <ItemContent className="m-2">
             <ItemTitle className="text-2xl">{Name}</ItemTitle>
-            <ItemTitle className="text-2xl">{Type}</ItemTitle>
-            <div>
-                <Badge variant="outline"><User />{seats}</Badge>
-            <Badge variant="outline"><TbLuggage />{bags}</Badge>
-            <Badge variant="outline"><GiCarDoor />{doors}</Badge>
-            {automatic && <Badge>Automatic</Badge>}
+            <ItemTitle className="text-xl text-muted-foreground">{Type}</ItemTitle>
+            <div className="flex gap-2 my-2">
+              <Badge variant="outline"><User className="w-4 h-4 mr-1" />{seats}</Badge>
+              <Badge variant="outline"><Luggage className="w-4 h-4 mr-1" />{bags}</Badge>
+              <Badge variant="outline"><GiCarDoor className="w-4 h-4 mr-1" />{doors}</Badge>
+              {automatic && <Badge>Automatic</Badge>}
             </div>
-                 <div className="relative mx-auto w-full pb-4 ">
-                    <img 
-                    src={ImgUrl} 
-                    alt={Name}
-                    className=" object-cover"
-                    />
-                 </div>
-          
-          
-          <ItemDescription>
-            {Comment}
-          </ItemDescription>
-          <div className="flex items-end gap-2">
-           {/* Daily price */}
-             <div className="flex items-baseline gap-1">
-               <span className="text-sm font-medium ">E£</span>
-               <span className="text-3xl font-bold ">{DayPrice}</span>
-               <span className="text-sm ">/day</span>
-             </div>
+            <div className="relative mx-auto w-full pb-4">
+              <img src={ImgUrl} alt={Name} className="object-cover rounded-lg" />
+            </div>
+            <ItemDescription>{Comment}</ItemDescription>
+            <div className="flex flex-col mt-4">
+              <div className="flex items-baseline gap-1">
+                <span className="text-sm font-medium">E£</span>
+                <span className="text-3xl font-bold">{currentDailyPrice}</span>
+                <span className="text-sm">/day</span>
+              </div>
+            </div>
+          </ItemContent>
 
-             {/* Total price */}
-             <span className="text-sm ">E£ {TotalPrice} total</span>
+          <ItemContent className="m-2 flex-1">
+            <ItemTitle className="text-2xl my-2">Booking Summary</ItemTitle>
+            <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-muted rounded-lg">
+              <div>
+                <Label className="text-muted-foreground">Pick Up</Label>
+                <p className="font-semibold">{checkOutDate}</p>
+                <p className="text-sm">{pickupStation}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Return</Label>
+                <p className="font-semibold">{checkInDate}</p>
+                <p className="text-sm">{returnStation}</p>
+              </div>
+            </div>
 
-               
+            <Table>
+              <TableCaption>
+                Plan: {selectedMileageType.toUpperCase()}
+              </TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Service</TableHead>
+                  <TableHead>Qty</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Rental Fee </TableCell>
+                  <TableCell>{rentalDays}</TableCell>
+                  <TableCell className="text-right">EGP {rentalTotal.toFixed(2)}</TableCell>
+                </TableRow>
+                {cityFees > 0 && (
+                  <TableRow>
+                    <TableCell>Transport Fees</TableCell>
+                    <TableCell>1</TableCell>
+                    <TableCell className="text-right">EGP {cityFees.toFixed(2)}</TableCell>
+                  </TableRow>
+                )}
+                {selectedServices.map((service, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{service.name}</TableCell>
+                    <TableCell>1</TableCell>
+                    <TableCell className="text-right">EGP {service.price.toFixed(2)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={2} className="text-lg font-bold">Total Amount</TableCell>
+                  <TableCell className="text-right text-lg font-bold text-primary">
+                    EGP {grandTotal.toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+           {selectedMileageType === "limited" && MileageKM && (
+              <ItemDescription>
+                Price for every km above {MileageKM} Km is {extraKmPrice} EGP
+              </ItemDescription>
+            )}
 
-           </div>
-
-        </ItemContent>
-        <ItemContent className="m-2">
-          <ItemTitle className="text-2xl mx-auto my-2 ">Date</ItemTitle>
-          <div className="flex gap-5 h-auto flex-wrap mx-auto justify-center items-center">
-                    <div>
-                    <Label className="my-2"  htmlFor="CheckOutTitle">Check Out</Label>
-                    <Label className="my-2"  htmlFor="CheckOut">Thu, 27. Nov, 2025 | 12:00</Label>
-                    <Label className="mt-4"  htmlFor="PickupTitle">Pickup Station</Label>
-                    <Label className="my-2"  htmlFor="Pickup">Hurghada</Label>
-                    </div>
-                    <div >
-                    <Label className="my-2" htmlFor="CheckInTitle">Check In</Label>
-                    <Label className="my-2"  htmlFor="DateFrom">Sun, 23. Nov, 2025 | 12:00</Label>
-                    <Label className="mt-4"  htmlFor="ReturnTitle">Return Station</Label>
-                    <Label className="my-2"  htmlFor="Return">Hurghada</Label>
-                    </div>
-          </div>
-          <ItemTitle className="text-2xl mx-auto my-2 ">3 Rental Days</ItemTitle>
-           <Table>
-           <TableCaption>Rental includes Kms: 700,  Excess mileage 00.30 EUR</TableCaption>
-           <TableHeader>
-             <TableRow>
-               <TableHead className="w-[100px]">Service</TableHead>
-               <TableHead>Quantity</TableHead>
-               <TableHead>Amount</TableHead>
-               <TableHead className="text-right">Total Amount</TableHead>
-             </TableRow>
-           </TableHeader>
-           <TableBody>
-             <TableRow>
-               <TableCell className="font-medium">Rental fee</TableCell>
-               <TableCell>3</TableCell>
-               <TableCell>100.00</TableCell>
-               <TableCell className="text-right">300.00</TableCell>
-             </TableRow>
-             <TableRow>
-               <TableCell className="font-medium">WiFi</TableCell>
-               <TableCell>1</TableCell>
-               <TableCell>20.00</TableCell>
-               <TableCell className="text-right">20.00</TableCell>
-             </TableRow>
-             <TableFooter>
-               <TableRow>
-                 <TableCell colSpan={3}>Total</TableCell>
-                 <TableCell className="text-right">320.00</TableCell>
-               </TableRow>
-             </TableFooter>
-           </TableBody>
-         </Table>
-         <Button children="Confirm" className="w-4/6 mx-auto mt-2"/>
-        </ItemContent>
-      </div>
+            <Button 
+              onClick={handleConfirm} 
+              disabled={isSubmitting}
+              className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white"
+            >
+              {isSubmitting ? "Processing..." : "Confirm Reservation"}
+            </Button>
+          </ItemContent>
+        </div>
       </Item>
     </div>
   );

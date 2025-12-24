@@ -1,6 +1,7 @@
 import AdminCities from "@/components/Main/AdminCities";
 import { AddCity } from "@/components/ui/city/AddCity";
 import ManageReviewsPage from "@/components/ui/reviews/ManageReviewsPage";
+import { requireAdmin } from "@/lib/auth"
 
 
 
@@ -10,6 +11,7 @@ export default async function reviewsPage({
 }: { 
   searchParams: Promise<{ from?: string; to?: string; page?: string }> 
 }) {
+  await requireAdmin()
   
 
 

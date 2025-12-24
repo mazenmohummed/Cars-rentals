@@ -1,12 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import * as React from "react";
 import { z } from "zod";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Sheet,
   SheetClose,
@@ -17,82 +23,72 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Calendar22 } from "../../HeadBar/CarSearchForm";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // Zod Schema
 export const AddReservationSchema = z.object({
   carId: z.string().min(1, "Car is required"),
-
-  startDate: z.coerce.date({
+  startDate: z.date({
     message: "Start date is required",
   }),
-
-  endDate: z.coerce.date({
+  endDate: z.date({
     message: "End date is required",
   }),
-
   reason: z.string().min(1, "Reason is required"),
-})
-.refine(
-  (data) => data.endDate >= data.startDate,
-  {
-    message: "End date must be after start date",
-    path: ["endDate"],
-  }
-);
+}).refine((data) => data.endDate >= data.startDate, {
+  message: "End date must be after start date",
+  path: ["endDate"],
+});
 
-export type AddReservationType = z.infer<typeof AddReservationSchema>;
+type AddReservationType = z.infer<typeof AddReservationSchema>;
 
 interface AddReservationProps {
   carId: string;
 }
 
 export const AddReservation = ({ carId }: AddReservationProps) => {
-
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [endDate, setEndDate] = useState<Date | undefined>();
-  const [reason, setReason] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // 1. Initialize the form
+  const form = useForm<AddReservationType>({
+    resolver: zodResolver(AddReservationSchema),
+    defaultValues: {
+      carId: carId,
+      reason: "",
+    },
+  });
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 2. Handle Submission
+  const onSubmit = async (values: AddReservationType) => {
     setLoading(true);
-    setErrors({});
-
-    const data = { carId, startDate, endDate, reason };
-
-    const parsed = AddReservationSchema.safeParse(data);
-
-    if (!parsed.success) {
-      const fieldErrors: Record<string, string> = {};
-      parsed.error.issues.forEach((issue) => {
-        const field = issue.path[0] as string;
-        fieldErrors[field] = issue.message;
-      });
-
-      setErrors(fieldErrors);
-      setLoading(false);
-      return;
-    }
-
     try {
       const res = await fetch("/api/add-reservation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify(values),
       });
 
       if (!res.ok) throw new Error("Failed to add reservation");
 
       toast.success("Reservation added 🚗");
+      form.reset();
       setOpen(false);
-
-      setStartDate(undefined);
-      setEndDate(undefined);
-      setReason("");
-
     } catch (err: any) {
       toast.error(err.message || "Something went wrong");
     } finally {
@@ -106,52 +102,125 @@ export const AddReservation = ({ carId }: AddReservationProps) => {
         <Button type="button">Add Reservation</Button>
       </SheetTrigger>
 
-      <SheetContent>
+      <SheetContent className="sm:max-w-[440px]">
         <SheetHeader>
           <SheetTitle>Add new Reservation</SheetTitle>
           <SheetDescription>
-            Add your reservation. Click save when you&apos;re done.
+            Block car availability for maintenance or external bookings.
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-md border p-4">
-          <h2 className="text-lg font-semibold">Block Car Availability</h2>
-
-          {/* Start Date */}
-          <Calendar22
-            Title="Start Date"
-            value={startDate}
-            onChange={(date) => setStartDate(date)}
-          />
-          {errors.startDate && <p className="text-red-500 text-sm">{errors.startDate}</p>}
-
-          {/* End Date */}
-          <Calendar22
-            Title="End Date"
-            value={endDate}
-            onChange={(date) => setEndDate(date)}
-          />
-          {errors.endDate && <p className="text-red-500 text-sm">{errors.endDate}</p>}
-
-          {/* Reason */}
-          <div className="grid gap-3">
-            <Label>Reason</Label>
-            <Input
-              placeholder="Maintenance, booked, cleaning..."
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
+        {/* 3. Wrap in Form provider */}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
+            
+            {/* START DATE */}
+            <FormField
+              control={form.control}
+              name="startDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Start Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < today}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.reason && <p className="text-red-500 text-sm">{errors.reason}</p>}
-          </div>
 
-          <Button disabled={loading}>
-            {loading ? "Saving..." : "Add reservation"}
-          </Button>
-        </form>
+            {/* END DATE */}
+            <FormField
+              control={form.control}
+              name="endDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>End Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => 
+                           date < today || date < (form.getValues("startDate") || today)
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <SheetFooter>
+            {/* REASON */}
+            <FormField
+              control={form.control}
+              name="reason"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reason</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Maintenance, Cleaning..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Add Reservation"
+              )}
+            </Button>
+          </form>
+        </Form>
+
+        <SheetFooter className="mt-6">
           <SheetClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline" className="w-full">Cancel</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>

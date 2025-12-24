@@ -18,9 +18,10 @@ import { useState } from "react";
 import { User } from 'lucide-react';
 import { Luggage } from 'lucide-react';
 import { GiCarDoor } from "react-icons/gi";
+import { differenceInDays, parseISO } from "date-fns";
 
 
-interface IProps {
+interface IReserveCard {
  Name: string;
   Comment: string;
   ImgUrl: string;
@@ -34,6 +35,11 @@ interface IProps {
   doors: number;
   automatic: boolean;
   extraKmPrice:number | null;
+  fromDate?: string;
+  toDate?: string;
+  cityFees: number;
+  pickupCity:string | undefined,
+  returnCity:string | undefined,
 }
 
 
@@ -51,14 +57,26 @@ export default function ReserveCard({
   bags,
   doors,
   automatic,
-  extraKmPrice
- }: IProps ) {
+  extraKmPrice,
+  fromDate,
+  toDate,
+  cityFees,
+  pickupCity,
+  returnCity
+ }: IReserveCard ) {
   
   const [Mileage, setMileage] = useState<string | null>(null);
-  
 
-const dayPrice =
-  Mileage === "unlimited" ? unlimitedPrice : limitedPrice;
+  // 1. Calculate Days
+  const rentalDays = (fromDate && toDate) 
+    ? Math.max(differenceInDays(parseISO(toDate), parseISO(fromDate)), 1) 
+    : 1;
+
+  // 2. Determine Daily Price based on selection
+  const currentDailyPrice = Mileage === "unlimited" ? (unlimitedPrice ?? 0) : (limitedPrice ?? 0);  
+  
+  // 3. Final Calculation: (Daily * Days) + City Fees
+  const totalPrice = (currentDailyPrice * rentalDays) + cityFees;
 
   
   return (
@@ -94,12 +112,12 @@ const dayPrice =
           <div className="flex items-end gap-2">
              <div className="flex items-baseline gap-1">
                <span className="text-sm font-medium ">E£</span>
-               <span className="text-3xl font-bold ">{dayPrice}</span>
+               <span className="text-3xl font-bold ">{currentDailyPrice}</span>
                <span className="text-sm ">/day</span>
              </div>
               
              {/* Total price */}
-             <span className="text-sm ">E£ {0} total</span>
+             <span className="text-sm ">E£ {totalPrice} total</span>
 
                
 
@@ -131,9 +149,9 @@ const dayPrice =
           </ItemDescription>
             </ItemContent>
           </Item>
-          <Link href={`/cars/${Id}/services`}>
-          <Button className=" mx-6 w-40" children="Next "/>
-          </Link>
+          <Link href={`/cars/${Id}/services?from=${fromDate}&to=${toDate}&pickup=${pickupCity}&return=${returnCity}&mileage=${Mileage}`}>
+        <Button className="mx-6 w-40">Next</Button>
+      </Link>
           </div>
         </ItemContent>
       </div>

@@ -1,11 +1,12 @@
 import AdminCities from "@/components/Main/AdminCities";
 import { AddCity } from "@/components/ui/city/AddCity";
+import { requireAdmin } from "@/lib/auth"
 
 
 
 
-export default function citiesPage() {
-  
+export default async function citiesPage() {
+  await requireAdmin()
 
 
   return (

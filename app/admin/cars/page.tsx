@@ -2,9 +2,13 @@ import AdminCars from "@/components/Main/AdminCars";
 import { AddCar } from "@/components/ui/car/AddCar";
 import { Button } from "@/components/ui/button";
 
+import { requireAdmin } from "@/lib/auth"
+import Link from "next/link";
 
 
-export default function CarPage({ params }: { params: { id: string } }) {
+
+export default async function CarPage({ params }: { params: { id: string } }) {
+  await requireAdmin()
   const carId = Number(params.id);
   
 
@@ -12,9 +16,13 @@ export default function CarPage({ params }: { params: { id: string } }) {
   return (
     <main className="">
         <h1 className="flex justify-center items-center text-4xl mx-auto py-4">Manage Cars</h1> 
+
+        
         
         <div className="flex justify-center mx-auto my-4">
-
+          <Link href={`/admin/cars/services`}>
+          <Button className=" mx-6 w-40" children="Manage Services"/>
+          </Link>
         <AddCar /> 
         </div>
 

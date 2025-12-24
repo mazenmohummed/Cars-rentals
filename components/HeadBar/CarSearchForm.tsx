@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -22,30 +23,46 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { CityPicker } from "./CityPicker" // Adjust import path
 
-// Validation Schema
+// Updated Validation Schema
 const FormSchema = z.object({
-  pickupDate: z.date({
-    message: "Pickup date is required.", // Standard way in newer Zod
-  }),
-  returnDate: z.date({
-    message: "Return date is required.",
-  }),
+  pickupCityId: z.string().min(1, "Pickup city is required"),
+  returnCityId: z.string().min(1, "Return city is required"),
+  pickupDate: z.date({ message: "Pickup date is required." }),
+  returnDate: z.date({ message: "Return date is required." }),
 }).refine((data) => data.returnDate >= data.pickupDate, {
   message: "Return date cannot be before pickup date",
   path: ["returnDate"],
 })
 
-export function CarSearchForm() {
+interface CarSearchFormProps {
+  cities: { value: string; label: string }[];
+}
+
+export function CarSearchForm({ cities }: CarSearchFormProps) {
+  const router = useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      pickupCityId: "",
+      returnCityId: "",
+    }
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    // Redirect to your /cars page with the dates as search params
     const from = format(data.pickupDate, "yyyy-MM-dd")
     const to = format(data.returnDate, "yyyy-MM-dd")
-    window.location.href = `/cars?from=${from}&to=${to}`
+    
+    // Construct the URL with all params
+    const params = new URLSearchParams({
+      from,
+      to,
+      pickupCityId: data.pickupCityId,
+      returnCityId: data.returnCityId,
+    })
+
+    router.push(`/cars?${params.toString()}`)
   }
 
   const today = new Date()
@@ -53,8 +70,48 @@ export function CarSearchForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-wrap items-end gap-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-wrap items-end gap-4 p-4 border rounded-lg bg-card shadow-sm">
         
+        {/* PICKUP CITY */}
+        <FormField
+          control={form.control}
+          name="pickupCityId"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-[240px]">
+              <FormLabel>Pickup Location</FormLabel>
+              <FormControl>
+                <CityPicker 
+                  title="Select pickup city" 
+                  cities={cities} 
+                  onChange={field.onChange} 
+                  defaultValue={field.value}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* RETURN CITY */}
+        <FormField
+          control={form.control}
+          name="returnCityId"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-[240px]">
+              <FormLabel>Return Location</FormLabel>
+              <FormControl>
+                <CityPicker 
+                  title="Select return city" 
+                  cities={cities} 
+                  onChange={field.onChange} 
+                  defaultValue={field.value}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* PICKUP DATE */}
         <FormField
           control={form.control}
@@ -82,9 +139,8 @@ export function CarSearchForm() {
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={{ before: today }}
-                    startMonth={today}
-                    autoFocus
+                    disabled={(date) => date < today}
+                    initialFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -120,10 +176,10 @@ export function CarSearchForm() {
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    // Disable dates before the pickup date if it's selected, otherwise disable before today
-                    disabled={{ before: form.getValues("pickupDate") || today }}
-                    startMonth={form.getValues("pickupDate") || today}
-                    autoFocus
+                    disabled={(date) => 
+                      date < today || date < (form.getValues("pickupDate") || today)
+                    }
+                    initialFocus
                   />
                 </PopoverContent>
               </Popover>

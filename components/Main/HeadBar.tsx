@@ -26,7 +26,7 @@ export function HeadBar(){
 
              </div>
              <div className="flex items-center gap-4">
-             <Globe/>
+             
                   <SignedOut>
               <SignInButton />
               <SignUpButton>
@@ -39,6 +39,9 @@ export function HeadBar(){
               <UserButton />
             </SignedIn>
             <ModeToggle/>
+            <Link href="/profile">
+             <Globe/>
+            </Link>
              </div>
            </div>
        </nav>
