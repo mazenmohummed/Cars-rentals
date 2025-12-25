@@ -67,10 +67,11 @@ export default function AdminReservationsClient() {
     } catch (err) { toast.error("Delete failed"); }
   };
 
-  const filtered = reservations.filter((res: any) => 
-    res.user.firstName?.toLowerCase().includes(search.toLowerCase()) ||
-    res.car.name?.toLowerCase().includes(search.toLowerCase())
-  );
+const filtered = reservations.filter((res: any) => 
+  res.user.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+  res.car.name?.toLowerCase().includes(search.toLowerCase()) ||
+  res.user.telephone?.includes(search) // Added search by phone
+);
 
   if (loading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
 
@@ -105,6 +106,9 @@ export default function AdminReservationsClient() {
                 <TableCell>
                   <div className="flex flex-col">
                     <span className="font-medium">{res.user.firstName} {res.user.lastName}</span>
+                    <span className="text-xs font-mono text-primary flex items-center gap-1">
+                    {res.user.telephone || "No phone provided"}
+                    </span>
                     <span className="text-xs text-muted-foreground">{res.car.name}</span>
                   </div>
                 </TableCell>
