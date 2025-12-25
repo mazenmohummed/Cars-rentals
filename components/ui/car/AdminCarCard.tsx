@@ -10,7 +10,6 @@ import { Luggage } from 'lucide-react';
 import { GiCarDoor } from "react-icons/gi";
 import { Button } from "../button";
 import { AddMileagePlan } from "../mileage/AddMileagePlan";
-import { AddReservation } from "../reservation/AddReservation";
 import { ICarData, UpdateCar } from "./UpdateCar";
 import {IMileagePlanData, UpdateMileagePlan} from "../mileage/UpdateMileagePlan";
 
@@ -57,7 +56,7 @@ export function AdminCarCard({
   
   return (
  
-    <div className="flex w-full max-w-md flex-col gap-6">
+    <div className="flex min-w-[375px] flex-col gap-6">
       <Item variant="outline">
         <ItemContent>
 
@@ -69,11 +68,11 @@ export function AdminCarCard({
             <Badge variant="outline"><GiCarDoor />{doors}</Badge>
             {automatic && <Badge>Automatic</Badge>}
             </div>
-                 <div className="relative mx-auto w-full pb-4 ">
+                 <div className="relative w-full aspect-video overflow-hidden rounded-lg">
                     <img 
                     src={ImgUrl} 
                     alt={Name}
-                    className=" object-cover"
+                    className=" absolute inset-0 w-full h-full object-cover"
                     />
                  </div>
           
@@ -96,16 +95,13 @@ export function AdminCarCard({
                
 
            </div>
-           <div className="flex gap-4 my-4 ">
+           <div className="flex w-full my-4 mx-auto">
            <UpdateCar carId={carId} initialData={carInitialData}/> 
-
-
            </div>
-           <div className="flex gap-4 my-4 ">
+           <div className="flex mx-auto gap-4 my-4 ">
             <AddMileagePlan carId={carId}/> 
-           <AddReservation carId={carId}/>
-           </div>
            <UpdateMileagePlan limitedPrice={limitedPrice} unlimitedPrice={unlimitedPrice} carId={carId} initialData={mileageInitialData}/>
+           </div>
 
         </ItemContent>
       </Item>

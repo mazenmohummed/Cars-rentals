@@ -71,8 +71,11 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-wrap items-end gap-4 p-4 border rounded-lg bg-card shadow-sm">
-        
+        <div className="flex ">
+        <div className="px-6">
+        <div className="flex gap-4" >
         {/* PICKUP CITY */}
+        
         <FormField
           control={form.control}
           name="pickupCityId"
@@ -91,7 +94,6 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
             </FormItem>
           )}
         />
-
         {/* RETURN CITY */}
         <FormField
           control={form.control}
@@ -111,9 +113,10 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
             </FormItem>
           )}
         />
-
+        </div>
+        <div className="flex gap-4 mt-2">
         {/* PICKUP DATE */}
-        <FormField
+        <FormField 
           control={form.control}
           name="pickupDate"
           render={({ field }) => (
@@ -148,7 +151,6 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
             </FormItem>
           )}
         />
-
         {/* RETURN DATE */}
         <FormField
           control={form.control}
@@ -187,8 +189,11 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
             </FormItem>
           )}
         />
+        </div>
+        </div>
 
-        <Button type="submit" className="h-10">Search Available Cars</Button>
+        <Button type="submit" className="h-10 mx-6 my-auto">Search Available Cars</Button>
+        </div>
       </form>
     </Form>
   )

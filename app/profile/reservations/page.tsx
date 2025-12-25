@@ -77,13 +77,13 @@ export default async function ProfileReservationsPage() {
                 <TableRow key={res.id}>
                     
                   <TableCell>
-                    <Link href={`/reservations/${res.id}`}>
+                    <Link href={`/profile/reservations/${res.id}`}>
                     <div className="font-semibold">{res.car.name}</div>
                     <div className="text-xs text-muted-foreground uppercase">{res.id.slice(-8)}</div>
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Link href={`/reservations/${res.id}`}>
+                    <Link href={`/profile/reservations/${res.id}`}>
                     <div className="text-sm">
                       {format(new Date(res.startDate), "dd MMM yyyy")}
                     </div>
@@ -93,7 +93,7 @@ export default async function ProfileReservationsPage() {
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Link href={`/reservations/${res.id}`}>
+                    <Link href={`/profile/reservations/${res.id}`}>
                     <div className="text-sm flex flex-col">
                       <span>From: {res.pickupCity.name}</span>
                       <span>To: {res.returnCity.name}</span>
@@ -101,14 +101,14 @@ export default async function ProfileReservationsPage() {
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Link href={`/reservations/${res.id}`}>
+                    <Link href={`/profile/reservations/${res.id}`}>
                     <Badge variant={getStatusVariant(res.status)}>
                       {res.status.replace("_", " ")}
                     </Badge>
                     </Link>
                   </TableCell>
                   <TableCell className="text-right font-bold">
-                    <Link href={`/reservations/${res.id}`}>
+                    <Link href={`/profile/reservations/${res.id}`}>
                     EGP {res.totalPrice.toLocaleString()}
                     </Link>
                   </TableCell>

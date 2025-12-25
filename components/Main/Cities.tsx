@@ -11,7 +11,7 @@ const Cities = async () => {
 
   return (
     <div className="mx-auto justify-center w-full py-6 px-2">
-      <div className="flex justify-center mx-auto">
+      <div className="flex flex-wrap justify-center mx-auto">
         <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-4xl">
           Our Cities
         </h2>

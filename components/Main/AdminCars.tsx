@@ -9,8 +9,8 @@ const AdminCars = async () => {
   });
 
   return (
-    <div className="flex pt-[6] justify-center">
-      <div className="flex flex-wrap p-2 justify-center w-full md:w-5/6 lg:w-5/6 xl:w-5/6 gap-3">
+    <div className="flex justify-center w-full">
+      <div className="flex flex-wrap justify-center items-center gap-6 w-full ">
         {cars.map((car) => {
           const limitedPlan = car.mileagePlans.find(
             (plan) => plan.type === "LIMITED"

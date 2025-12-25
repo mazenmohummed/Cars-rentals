@@ -26,11 +26,11 @@ export function CityCard({Name,Comment,ImgUrl}: IProps) {
     <div className="flex w-full max-w-md flex-col gap-6">
       <Item variant="outline">
         <ItemContent>          
-                 <div className="relative mx-auto w-full pb-4 ">
+                 <div className="relative w-full aspect-video overflow-hidden rounded-lg">
                     <img 
                     src={ImgUrl} 
                     alt={Name}
-                    className=" object-cover"
+                    className=" absolute inset-0 w-full h-full object-cover"
                     />
                  </div>
           <ItemTitle className="text-2xl">{Name}</ItemTitle>

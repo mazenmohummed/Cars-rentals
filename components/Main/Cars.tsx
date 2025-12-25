@@ -44,29 +44,45 @@ const Cars = async ({ searchParams }: CarsProps) => {
       }
 
 
-  // 3. Fetch Available Cars
-  const cars = await prisma.car.findMany({
-    where: {
-      isActive: true,
-      NOT: {
-        availability: {
-          some: {
+  
+        // 3. Fetch Available Cars
+        const cars = await prisma.car.findMany({
+          where: {
+            isActive: true,
             AND: [
-              { startDate: { lte: endDate || new Date() } },
-              { endDate: { gte: startDate || new Date() } },
+              // Condition 1: Must NOT have a manual unavailability block during these dates
+              {
+                availability: {
+                  none: {
+                    AND: [
+                      { startDate: { lte: endDate || new Date() } },
+                      { endDate: { gte: startDate || new Date() } },
+                    ],
+                  },
+                },
+              },
+              // Condition 2: Must NOT have a reservation during these dates
+              {
+                reservations: {
+                  none: {
+                    AND: [
+                      { status: { not: "CANCELLED" } }, // Only count active bookings
+                      { startDate: { lte: endDate || new Date() } },
+                      { endDate: { gte: startDate || new Date() } },
+                    ],
+                  },
+                },
+              },
             ],
           },
-        },
-      },
-    },
-    include: {
-      mileagePlans: true,
-    },
-  });
+          include: {
+            mileagePlans: true,
+          },
+        });
 
   return (
     <div className="flex justify-center w-full">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full md:w-5/6 lg:w-5/6 xl:w-5/6">
+      <div className="flex flex-wrap justify-center items-center gap-6 w-full ">
         {cars.map((car) => {
           const limitedPlan = car.mileagePlans.find((p) => p.type === "LIMITED");
           const dailyPrice = limitedPlan?.pricePerDay ?? 0;

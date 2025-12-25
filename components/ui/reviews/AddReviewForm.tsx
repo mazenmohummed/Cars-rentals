@@ -58,7 +58,7 @@ async function onSubmit(values: ReviewFormValues) {
 }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4 border rounded-xl bg-card">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4 border  bg-card">
         <FormField
           control={form.control}
           name="stars"

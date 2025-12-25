@@ -35,49 +35,49 @@ export function CarCard({
   automatic,
 }: IProps) {
   return (
- 
-    <div className="flex w-full max-w-md flex-col gap-6">
-      <Item variant="outline">
-        <ItemContent>
-
-            <ItemTitle className="text-2xl">{Name}</ItemTitle>
-            <ItemTitle className="text-2xl">{Type}</ItemTitle>
-            <div className="flex gap-2">
-            <Badge variant="outline"><User />{seats}</Badge>
-            <Badge variant="outline"><Luggage />{bags}</Badge>
-            <Badge variant="outline"><GiCarDoor />{doors}</Badge>
-            {automatic && <Badge>Automatic</Badge>}
-            </div>
-                 <div className="relative mx-auto w-full pb-4 ">
-                    <img 
-                    src={ImgUrl} 
-                    alt={Name}
-                    className=" object-cover"
-                    />
+    <div className="flex w-full min-w-[375px] flex-col gap-6">
+          <Item variant="outline">
+            <ItemContent>
+    
+                <ItemTitle className="text-2xl">{Name}</ItemTitle>
+                <ItemTitle className="text-2xl">{Type}</ItemTitle>
+                <div className="flex gap-2">
+                <Badge variant="outline"><User />{seats}</Badge>
+                <Badge variant="outline"><Luggage />{bags}</Badge>
+                <Badge variant="outline"><GiCarDoor />{doors}</Badge>
+                {automatic && <Badge>Automatic</Badge>}
+                </div>
+                     <div className="relative w-full aspect-video overflow-hidden rounded-lg">
+                        <img 
+                        src={ImgUrl} 
+                        alt={Name}
+                        className=" absolute inset-0 w-full h-full object-cover"
+                        />
+                     </div>
+              
+              
+              <ItemDescription>
+                {Comment}
+              </ItemDescription>
+              <div className="flex items-end gap-2">
+               {/* Daily price */}
+                 <div className="flex items-baseline gap-1">
+                   <span className="text-sm font-medium ">E£</span>
+                   <span className="text-3xl font-bold ">{DayPrice}</span>
+                   <span className="text-sm ">/day</span>
                  </div>
-          
-          
-          <ItemDescription>
-            {Comment}
-          </ItemDescription>
-          <div className="flex items-end gap-2">
-           {/* Daily price */}
-             <div className="flex items-baseline gap-1">
-               <span className="text-sm font-medium ">E£</span>
-               <span className="text-3xl font-bold ">{DayPrice}</span>
-               <span className="text-sm ">/day</span>
-             </div>
-
-             {/* Total price */}
-             <span className="text-sm ">E£ {TotalPrice} total</span>
-
-               
-
-           </div>
-
-        </ItemContent>
-      </Item>
-    </div>
+    
+                 {/* Total price */}
+                 <span className="text-sm ">E£ {TotalPrice} Umlimited Price</span>
+    
+    
+                   
+    
+               </div>
+    
+            </ItemContent>
+          </Item>
+        </div>
 
   )
 }

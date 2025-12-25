@@ -105,7 +105,7 @@ export function AddCar() {
     <Sheet  open={open} onOpenChange={setOpen}>
        
       <SheetTrigger asChild>
-        <Button >Add Car</Button>
+        <Button type="button" className="w-40">Add Car</Button>
       </SheetTrigger>
       <SheetContent className="flex h-screen flex-col">
         <div className="flex-1 overflow-y-auto px-4">

@@ -39,9 +39,9 @@ export async function ReviewsSection({ searchParams }: Props) {
     : 0;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 mb-6">
       {/* Average Stats Header */}
-      <div className="flex flex-col items-center justify-center p-8 border rounded-2xl bg-muted/30">
+      <div className="flex flex-col items-center justify-center p-8 border bg-muted/30">
         <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Average Rating</h3>
         <div className="flex items-baseline gap-2 mt-2">
           <span className="text-5xl font-bold tracking-tighter">{averageRating}</span>

@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react"
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -11,6 +12,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Phone, Mail, Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { useTheme } from "next-themes";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export default function ProfilePage() {
   const { user: clerkUser, isLoaded } = useUser();

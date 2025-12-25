@@ -23,7 +23,15 @@ export default async function CarPage({ params }: { params: { id: string } }) {
           <Link href={`/admin/cars/services`}>
           <Button className=" mx-6 w-40" children="Manage Services"/>
           </Link>
-        <AddCar /> 
+          <Link href={`/admin/reservations`}>
+          <Button className=" mx-6 w-40" children="Manage Reservation"/>
+          </Link>
+          <Link href={`/admin/unavailability`}>
+          <Button className=" mx-6 w-40" children="Manage unavailability"/>
+          </Link>
+          <div className="mx-6 w-40">
+          <AddCar  /> 
+          </div>
         </div>
 
     <div className="flex justify-center mt-10">

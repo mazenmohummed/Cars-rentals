@@ -1,4 +1,4 @@
-import { Globe, SquareUser } from "lucide-react";
+import { Globe, Menu, SquareUser } from "lucide-react";
 import {ModeToggle} from "@/components/HeadBar/ModeToggle"
 import Image from "next/image";
 import AhmedCars from "@/img/AhmedCars.png"
@@ -26,7 +26,7 @@ export function HeadBar(){
 
              </div>
              <div className="flex items-center gap-4">
-             
+                  <Globe/>
                   <SignedOut>
               <SignInButton />
               <SignUpButton>
@@ -40,7 +40,7 @@ export function HeadBar(){
             </SignedIn>
             <ModeToggle/>
             <Link href="/profile">
-             <Globe/>
+             <Menu />
             </Link>
              </div>
            </div>

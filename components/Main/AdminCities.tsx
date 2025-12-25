@@ -11,8 +11,8 @@ const AdminCities = async () => {
   });
 
   return (
-    <div className="flex pt-[6] justify-center">
-      <div className="flex flex-wrap p-2 justify-center w-full md:w-5/6 lg:w-5/6 xl:w-5/6 gap-3">
+    <div className="flex justify-center w-full">
+      <div className="flex flex-wrap p-2 justify-center w-full gap-3">
        {city.map((city) => {
 
           return (

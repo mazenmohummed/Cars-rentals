@@ -136,8 +136,8 @@ const updateCar = async () => {
      
       <Sheet  open={open} onOpenChange={setOpen}>
          
-        <SheetTrigger asChild>
-          <Button >Update Car</Button>
+        <SheetTrigger className="w-full" asChild>
+          <Button type="button" >Update Car</Button>
         </SheetTrigger>
         <SheetContent className="flex h-screen flex-col">
           <div className="flex-1 overflow-y-auto px-4">
