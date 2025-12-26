@@ -111,13 +111,13 @@ export default function ReserveCard({
            {/* Daily price */}
           <div className="flex items-end gap-2">
              <div className="flex items-baseline gap-1">
-               <span className="text-sm font-medium ">E£</span>
+               <span className="text-sm font-medium ">€</span>
                <span className="text-3xl font-bold ">{currentDailyPrice}</span>
                <span className="text-sm ">/day</span>
              </div>
               
              {/* Total price */}
-             <span className="text-sm ">E£ {totalPrice} total</span>
+             <span className="text-sm ">€ {totalPrice} total</span>
 
                
 
@@ -145,7 +145,7 @@ export default function ReserveCard({
             <ItemContent>
             <ItemTitle className="text-2xl">{MileageKM} KM</ItemTitle>
             <ItemDescription>
-            +EGP {extraKmPrice} / for every additional km
+            +€ {extraKmPrice} / for every additional km
           </ItemDescription>
             </ItemContent>
           </Item>

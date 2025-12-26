@@ -62,13 +62,13 @@ export function CarCard({
               <div className="flex items-end gap-2">
                {/* Daily price */}
                  <div className="flex items-baseline gap-1">
-                   <span className="text-sm font-medium ">E£</span>
+                   <span className="text-sm font-medium ">€</span>
                    <span className="text-3xl font-bold ">{DayPrice}</span>
                    <span className="text-sm ">/day</span>
                  </div>
     
                  {/* Total price */}
-                 <span className="text-sm ">E£ {TotalPrice} Umlimited Price</span>
+                 <span className="text-sm ">€ {TotalPrice} Total</span>
     
     
                    

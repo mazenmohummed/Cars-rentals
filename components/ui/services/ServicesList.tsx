@@ -3,8 +3,9 @@
 import { useState } from "react";
 import ServiceCard from "./ServiceCard";
 import { Button } from "@/components/ui/button";
-import { Wifi, User, Fuel, Baby, HelpCircle } from "lucide-react";
+import { Wifi, User, Fuel, Baby } from "lucide-react";
 import Link from "next/link";
+import { FaPlus } from "react-icons/fa";
 
 // Helper to map icons based on name
 const getIcon = (name: string) => {
@@ -13,7 +14,7 @@ const getIcon = (name: string) => {
   if (n.includes("driver")) return <User />;
   if (n.includes("fuel")) return <Fuel />;
   if (n.includes("baby") || n.includes("seat")) return <Baby />;
-  return <HelpCircle />;
+  return <FaPlus />;
 };
 
 interface ServicesListProps {
@@ -48,7 +49,7 @@ export default function ServicesList({ services, carId, searchParams }: Services
           id={service.id}
           Name={service.name}
           price={service.price}
-          description="EGP per additional service/day"
+          description={service.description || "Cost you addtional fee per reservation"}
           Icon={getIcon(service.name)}
           isSelected={selectedIds.includes(service.id)}
           onToggle={toggleService}

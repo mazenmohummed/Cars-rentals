@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { format } from "date-fns"
+import { addDays, format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -117,7 +117,7 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
         <div className="flex gap-4 mt-2">
         {/* PICKUP DATE */}
         <FormField 
-          control={form.control}
+          control={form.control}  
           name="pickupDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
@@ -143,7 +143,7 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date) => date < today}
-                    initialFocus
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -174,15 +174,23 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) => 
-                      date < today || date < (form.getValues("pickupDate") || today)
-                    }
-                    initialFocus
-                  />
+                 <Calendar
+                  mode="single"
+                  selected={field.value}
+                  onSelect={field.onChange}
+                  disabled={(date) => {
+                    const pickupDate = form.getValues("pickupDate");
+                    
+                    // If no pickup date is selected yet, disable all past dates
+                    if (!pickupDate) return date < today;
+
+                    // Set the minimum return date to 3 days after the pickup date
+                    const minReturnDate = addDays(pickupDate, 3);
+                    
+                    return date < minReturnDate;
+                  }}
+                  autoFocus
+                />
                 </PopoverContent>
               </Popover>
               <FormMessage />

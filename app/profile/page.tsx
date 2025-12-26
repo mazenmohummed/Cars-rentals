@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Phone, Mail, Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { useUser, useAuth } from "@clerk/nextjs"; 
 import { useTheme } from "next-themes";
 import {
   Select,
@@ -22,11 +22,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { ModeToggleSelect } from "@/components/HeadBar/ModeToggle";
 
 export default function ProfilePage() {
   const { user: clerkUser, isLoaded } = useUser();
   const router = useRouter();
-  
+  const { userId, isLoaded: isAuthLoaded } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -34,6 +35,18 @@ export default function ProfilePage() {
     telephone: "",
     email: "",
   });
+
+  useEffect(() => {
+    if (isAuthLoaded && !userId) {
+      // toast.error("Please sign in to access your profile");
+      
+      // Redirect to sign-up and return here afterwards
+      const currentPath = window.location.pathname;
+      router.push(`/sign-in?redirect_url=${encodeURIComponent(currentPath)}`);
+    }
+  }, [isAuthLoaded, userId, router]);
+
+
 
   // Fetch initial data from your DB via API or pass it as initial props
   useEffect(() => {
@@ -76,7 +89,16 @@ export default function ProfilePage() {
     }
   };
 
-  if (!isLoaded) return <div className="flex justify-center py-20"><Loader2 className="animate-spin" /></div>;
+  
+  if (!isLoaded || !isAuthLoaded) {
+    return (
+      <div className="flex justify-center py-20">
+        <Loader2 className="animate-spin h-8 w-8 text-primary" />
+      </div>
+    );
+  }
+
+  if (!userId) return null;
 
   return (
     <div className="container mx-auto py-10 px-4 max-w-4xl">
@@ -92,6 +114,9 @@ export default function ProfilePage() {
             <CardTitle>{formData.firstName} {formData.lastName}</CardTitle>
             <CardDescription>{formData.email}</CardDescription>
           </CardHeader>
+
+          <ModeToggleSelect/>
+
           <div className="flex mx-auto flex-col gap-2 pt-6">
           <Link href="profile/reservations" >
           <Button>Manege Reservations</Button>
@@ -135,6 +160,8 @@ export default function ProfilePage() {
                   onChange={(e) => setFormData({...formData, telephone: e.target.value})} 
                 />
               </div>
+
+              
 
               <Button type="submit" disabled={loading} className="w-full md:w-auto">
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

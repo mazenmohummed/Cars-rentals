@@ -4,10 +4,10 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, price } = body;
+    const { name, price, description } = body;
 
     const service = await prisma.extraService.create({
-      data: { name, price: Number(price) },
+      data: { name, price: Number(price),description },
     });
 
     return NextResponse.json(service);

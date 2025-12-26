@@ -26,6 +26,7 @@ export default async function ManageServicesPage() {
               <div>
                 <h3 className="font-bold">{service.name}</h3>
                 <p className="text-sm text-muted-foreground">${service.price}</p>
+                <p className="text-sm text-muted-foreground" >{service?.description}</p>
               </div>
             </div>
 

@@ -95,9 +95,9 @@ model MileagePlan {
   id String @id @default(cuid()) @map("_id")
 
   type         MileageType
-  pricePerDay  Int
-  kmPerDay     Int?
-  extraKmPrice Int?
+  pricePerDay  Float
+  kmPerDay     Float?
+  extraKmPrice Float?
 
   carId String
   car   Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
@@ -115,9 +115,10 @@ model MileagePlan {
 // =====================
 
 model ExtraService {
-  id    String @id @default(cuid()) @map("_id")
-  name  String
-  price Int
+  id          String  @id @default(cuid()) @map("_id")
+  name        String
+  price       Float
+  description String?
 
   isActive Boolean @default(true)
 
@@ -154,7 +155,7 @@ model Reservation {
   rentalDays      Int
   reservationDate DateTime @default(now())
 
-  totalPrice   Int
+  totalPrice   Float
   address      Address
   flightNumber String?
 
@@ -201,9 +202,9 @@ model ReservationService {
   serviceId String
   service   ExtraService @relation(fields: [serviceId], references: [id], onDelete: Restrict)
 
-  quantity   Int @default(1)
-  unitPrice  Int
-  totalPrice Int
+  quantity   Int   @default(1)
+  unitPrice  Float
+  totalPrice Float
 }
 
 // =====================
@@ -229,7 +230,7 @@ model Payment {
   reservationId String      @unique
   reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
 
-  amount Int
+  amount Float
   method PaymentMethod
   status PaymentStatus
 

@@ -1,7 +1,8 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs"; // 1. Import useAuth
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Button } from "./button";
 import { Item, ItemContent, ItemDescription, ItemTitle } from "./item";
 import { Badge } from "./badge";
@@ -76,6 +77,9 @@ export default function ConfirmCard({
   selectedMileageType
 }: ConfirmCardProps) {
   const router = useRouter();
+  const pathname = usePathname(); // Get current path
+  const searchParams = useSearchParams(); // Get current query strings
+  const { userId } = useAuth(); // 3. Get userId
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 1. Calculate Days
@@ -90,8 +94,20 @@ export default function ConfirmCard({
   const rentalTotal = rentalDays * dayPrice;
   const servicesTotal = selectedServices.reduce((sum, s) => sum + s.price, 0);
   const grandTotal = rentalTotal + servicesTotal + cityFees;
+  const KmTotal = (MileageKM ?? 0) * rentalDays;
 
   const handleConfirm = async () => {
+    // 4. Check if user is logged in
+    if (!userId) {
+      
+      // Construct the current URL to return to after login
+      const currentUrl = `${pathname}?${searchParams.toString()}`;
+      
+      // Redirect to Clerk sign-up with a redirect_url parameter
+      router.push(`/sign-up?redirect_url=${encodeURIComponent(currentUrl)}`);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/reservations", {
@@ -99,7 +115,7 @@ export default function ConfirmCard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...reservationData,
-          totalPrice: grandTotal // Ensure API gets the final calculated total
+          totalPrice: grandTotal 
         }),
       });
 
@@ -170,20 +186,20 @@ export default function ConfirmCard({
                 <TableRow>
                   <TableCell>Rental Fee </TableCell>
                   <TableCell>{rentalDays}</TableCell>
-                  <TableCell className="text-right">EGP {rentalTotal.toFixed(2)}</TableCell>
+                  <TableCell className="text-right">€ {rentalTotal.toFixed(2)}</TableCell>
                 </TableRow>
                 {cityFees > 0 && (
                   <TableRow>
                     <TableCell>Transport Fees</TableCell>
                     <TableCell>1</TableCell>
-                    <TableCell className="text-right">EGP {cityFees.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">€ {cityFees.toFixed(2)}</TableCell>
                   </TableRow>
                 )}
                 {selectedServices.map((service, index) => (
                   <TableRow key={index}>
                     <TableCell>{service.name}</TableCell>
                     <TableCell>1</TableCell>
-                    <TableCell className="text-right">EGP {service.price.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">€ {service.price.toFixed(2)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -198,17 +214,17 @@ export default function ConfirmCard({
             </Table>
            {selectedMileageType === "limited" && MileageKM && (
               <ItemDescription>
-                Price for every km above {MileageKM} Km is {extraKmPrice} EGP
+                Price for every km above {KmTotal} Km is {(extraKmPrice?? 0).toFixed(2)} €
               </ItemDescription>
             )}
 
-            <Button 
-              onClick={handleConfirm} 
-              disabled={isSubmitting}
-              className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white"
-            >
-              {isSubmitting ? "Processing..." : "Confirm Reservation"}
-            </Button>
+                 <Button 
+                onClick={handleConfirm} 
+                disabled={isSubmitting}
+                className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white"
+              >
+                {isSubmitting ? "Processing..." : userId ? "Confirm Reservation" : "Sign up to Reserve"}
+              </Button>
           </ItemContent>
         </div>
       </Item>
