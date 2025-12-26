@@ -63,3 +63,40 @@ export async function PATCH(
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+
+// ... keep your existing imports and PATCH function above this ...
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { userId: clerkId } = await auth();
+    const { id } = await params;
+
+    if (!clerkId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    // 1. Verify Admin status
+    const admin = await prisma.user.findUnique({ 
+      where: { clerkId } 
+    });
+
+    if (admin?.role !== "ADMIN") {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
+
+    // 2. Delete the reservation
+    // Note: Because of your schema's onDelete: Cascade, 
+    // this will also automatically delete the linked Payment record.
+    await prisma.reservation.delete({
+      where: { id }
+    });
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error("[RESERVATION_DELETE_ERROR]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}

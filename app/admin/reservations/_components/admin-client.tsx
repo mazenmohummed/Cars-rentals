@@ -39,33 +39,49 @@ export default function AdminReservationsClient() {
 
   useEffect(() => { fetchAll(); }, []);
 
-  const onUpdate = async (id: string, status: ReservationStatus, payStatus: PaymentStatus) => {
-    const promise = fetch(`/api/admin/reservations/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status, paymentStatus: payStatus }),
-    }).then(async (res) => {
-      if (!res.ok) throw new Error();
-      fetchAll();
-    });
+  const onUpdate = async (id: string, status: ReservationStatus, payStatus: PaymentStatus | undefined) => {
+  // 1. Defend against undefined status which crashes Prisma
+  const paymentStatusToSend = payStatus || "PENDING";
 
-    toast.promise(promise, {
-      loading: 'Updating...',
-      success: 'Update successful!',
-      error: 'Update failed.',
-    });
-  };
+  const promise = fetch(`/api/admin/reservations/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    // 2. Ensure keys match what the API expects (paymentStatus)
+    body: JSON.stringify({ 
+      status, 
+      paymentStatus: paymentStatusToSend 
+    }),
+  }).then(async (res) => {
+    if (!res.ok) {
+      const errorMsg = await res.text();
+      throw new Error(errorMsg || "Failed to update");
+    }
+    fetchAll();
+  });
 
-  const onDelete = async (id: string) => {
-    if (!confirm("Are you sure? This action cannot be undone.")) return;
-    try {
-      const res = await fetch(`/api/admin/reservations/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        toast.success("Deleted");
-        fetchAll();
-      }
-    } catch (err) { toast.error("Delete failed"); }
-  };
+  toast.promise(promise, {
+    loading: 'Updating...',
+    success: 'Update successful!',
+    error: (err) => err.message || 'Update failed.',
+  });
+};
+
+const onDelete = async (id: string) => {
+  if (!confirm("Are you sure? This action cannot be undone.")) return;
+
+  const promise = fetch(`/api/admin/reservations/${id}`, { 
+    method: "DELETE" 
+  }).then(async (res) => {
+    if (!res.ok) throw new Error("Failed to delete");
+    fetchAll();
+  });
+
+  toast.promise(promise, {
+    loading: 'Deleting reservation...',
+    success: 'Reservation deleted',
+    error: 'Delete failed.',
+  });
+};
 
 const filtered = reservations.filter((res: any) => 
   res.user.firstName?.toLowerCase().includes(search.toLowerCase()) ||

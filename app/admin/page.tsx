@@ -24,8 +24,10 @@ export default async function AdminDashboard({ searchParams }: HomeProps) {
             <main className="">
                 <h1 className="flex justify-center items-center text-4xl mx-auto py-4">Admin Dashboard</h1>
                  
-             
-             <Button className="flex mx-auto my-4" children={<a href="/admin/cars">Manage Cars</a>}/>
+             <div className="flex items-center justify-center gap-6 ">
+             <Button className="flex my-4" children={<a href="/admin/cars">Manage Cars</a>}/>
+             <Button className="flex my-4" children={<a href="/admin/users">Manage Users</a>}/>
+             </div>
              <Action/>
              <Img/>
              <Numbers/>
