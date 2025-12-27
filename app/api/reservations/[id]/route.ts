@@ -10,24 +10,35 @@ export async function DELETE(
     const { userId: clerkId } = await auth();
     const { id } = await params;
 
-    // ✅ Fix: Guard against null. If clerkId is null, stop execution.
     if (!clerkId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Now TypeScript knows clerkId is a string, not null.
-    const admin = await prisma.user.findUnique({ 
+    // 1. Get the local DB User to check their role
+    const dbUser = await prisma.user.findUnique({ 
       where: { clerkId } 
     });
 
-    if (admin?.role !== "ADMIN") {
-      return new NextResponse("Unauthorized", { status: 403 });
+    if (!dbUser) {
+      return new NextResponse("User not found in database", { status: 404 });
     }
 
-    // Optional: Check if reservation exists before deleting to avoid Prisma errors
-    await prisma.reservation.delete({ 
-      where: { id } 
+    // 2. Define the deletion criteria
+    // If ADMIN: delete by ID only.
+    // If NOT ADMIN: delete by ID AND ensure the userId matches.
+    const whereClause = dbUser.role === "ADMIN" 
+      ? { id } 
+      : { id, userId: dbUser.id };
+
+    // 3. Use deleteMany to avoid 404/500 errors if record doesn't exist or unauthorized
+    const deletionResult = await prisma.reservation.deleteMany({ 
+      where: whereClause 
     });
+
+    // If nothing was deleted, it means either it didn't exist OR user wasn't authorized
+    if (deletionResult.count === 0) {
+      return new NextResponse("Forbidden or Not Found", { status: 403 });
+    }
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {
@@ -87,5 +98,32 @@ export async function PATCH(
   } catch (error) {
     console.error("[RESERVATION_PATCH_ERROR]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { userId: clerkId } = await auth();
+    const { id } = await params;
+
+    if (!clerkId) return new NextResponse("Unauthorized", { status: 401 });
+
+    const reservation = await prisma.reservation.findUnique({
+      where: { id },
+      include: {
+        car: true,
+        payment: true,
+        services: { include: { service: true } }
+      }
+    });
+
+    if (!reservation) return new NextResponse("Reservation not found", { status: 404 });
+
+    return NextResponse.json(reservation);
+  } catch (error) {
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }

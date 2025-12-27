@@ -87,7 +87,7 @@ export async function POST(req: Request) {
         endDate: end,
         rentalDays: Math.max(1, differenceInDays(end, start)),
         totalPrice,
-        flightNumber,
+        flightNumber: flightNumber,
         address: {
           set: address 
         },

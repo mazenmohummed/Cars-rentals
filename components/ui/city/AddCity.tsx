@@ -163,6 +163,7 @@ export function AddCity() {
                 <label className="block font-medium mb-1">Transportation fees</label>
                 <input
                   type="number"
+                  step="0.01"
                   value={transFee}
                   onChange={(e) => setTransFee( e.target.value === "" ? "" : Number(e.target.value))}
                   className="border px-2 py-1 rounded-md w-full"

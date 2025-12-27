@@ -78,8 +78,8 @@ export function ServiceForm({ service }: { service?: Service }) {
           </div>
           
           <div className="space-y-2">
-            <label className="text-sm font-medium">Daily Price (EGP)</label>
-            <Input name="price" type="number" placeholder="Price" defaultValue={service?.price} required />
+            <label className="text-sm font-medium">Price</label>
+            <Input name="price" type="number" step="0.01" placeholder="Price" defaultValue={service?.price} required />
           </div>
 
           <div className="space-y-2">

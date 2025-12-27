@@ -109,10 +109,9 @@ export default async function ProfileReservationsPage() {
                   </TableCell>
                   <TableCell className="text-right font-bold">
                     <Link href={`/profile/reservations/${res.id}`}>
-                    EGP {res.totalPrice.toLocaleString()}
+                      EGP { (res.totalPrice + (res.extraKmTotal || 0)).toLocaleString() }
                     </Link>
                   </TableCell>
-                  
                 </TableRow>
               ))
             )}

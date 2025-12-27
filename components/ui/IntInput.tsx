@@ -37,7 +37,7 @@ export function IntInput({
       <input
         type="number"
         inputMode="numeric"
-        step={1}
+        step="0.01"
         min={min}
         max={max}
         value={value ?? ""}

@@ -175,6 +175,7 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
         <label className="block font-medium mb-1">Price per Day</label>
         <input
           type="number"
+          step="0.01"
           value={pricePerDay}
           onChange={(e) => setPricePerDay(e.target.value === "" ? "" : Number(e.target.value))}
           className="border px-2 py-1 rounded-md w-full"
@@ -207,6 +208,7 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
             <label className="block font-medium mb-1">Extra Km Price</label>
             <input
               type="number"
+              step="0.01"
               value={extraKmPrice ?? ""}
               onChange={(e) => setExtraKmPrice(Number(e.target.value))}
               className="border px-2 py-1 rounded-md w-full"

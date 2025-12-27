@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { OdometerForm } from "@/components/Form/OdometerForm";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -56,16 +57,26 @@ export default async function ReservationDetailsPage({ params }: PageProps) {
     }
   });
 
-  // 3. Security: Ensure reservation exists & belongs to the current user
-  if (!reservation || reservation.userId !== dbUser.id) {
-    return notFound();
-  }
+// 3. Updated Security Check
+if (!reservation) {
+  return notFound();
+}
+
+// Allow access if the user IS the owner OR the user IS an ADMIN
+const isOwner = reservation.userId === dbUser.id;
+const isAdmin = dbUser.role === "ADMIN" || dbUser.role === "STAFF";
+
+if (!isOwner && !isAdmin) {
+  return notFound(); // Regular users still get 404 for other people's bookings
+}
 
   // 4. Calculations for the UI
   const days = reservation.rentalDays;
   const rentalTotal = reservation.mileagePlan.pricePerDay * days;
   const servicesTotal = reservation.services.reduce((acc, s) => acc + s.totalPrice, 0);
   const cityFees = reservation.pickupCity.transFee + reservation.returnCity.transFee;
+
+  console.log(reservation.extraKmUsed);
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6 max-w-5xl">
@@ -151,7 +162,8 @@ export default async function ReservationDetailsPage({ params }: PageProps) {
                <CardTitle className="text-lg">Customer Details</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div className="flex justify-between gap-4 text-sm">
+                <div>
                 <div>
                   <p className="text-muted-foreground mb-1">Contact Info</p>
                   <div className="flex items-center gap-2">
@@ -159,12 +171,15 @@ export default async function ReservationDetailsPage({ params }: PageProps) {
                      <span>{dbUser.firstName} {dbUser.lastName}</span>
                   </div>
                   <p className="ml-6">{dbUser.email}</p>
+                  <p className="ml-6">
+                    <span className="font-semibold text-foreground"></span> {dbUser.telephone || "No phone provided"}
+                  </p>
                   <p className="ml-6">{reservation.address.street}, {reservation.address.city}</p>
                   <p className="ml-6">{reservation.address.zip}</p>
                 </div>
                 
                 {reservation.flightNumber && (
-                  <div>
+                  <div className="my-4">
                     <p className="text-muted-foreground mb-1">Arrival Info</p>
                     <div className="flex items-center gap-2">
                        <Plane className="h-4 w-4" />
@@ -172,6 +187,28 @@ export default async function ReservationDetailsPage({ params }: PageProps) {
                     </div>
                   </div>
                 )}
+                </div>
+                {/* Admin Only Section */}
+                {dbUser.role === "ADMIN" && (
+                  <div className="pt-4 border-t">
+                    <p className="text-xs font-bold text-primary uppercase mb-2">Staff Only: Mileage Tracking</p>
+                    <OdometerForm 
+                      initialEnd={reservation.endOdometer ?? 0} 
+                      initialStart={reservation.startOdometer ?? 0} 
+                      reservationId={reservation.id}
+                    />
+                  </div>
+                )}
+                <div className="mt-2 p-2 bg-muted rounded text-xs">
+                  <div className="flex justify-between">
+                    <span>Distance Traveled:</span>
+                    <span className="font-bold">
+                      {reservation.endOdometer && reservation.startOdometer 
+                        ? (reservation.endOdometer - reservation.startOdometer).toLocaleString() 
+                        : 0} km
+                    </span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -180,7 +217,7 @@ export default async function ReservationDetailsPage({ params }: PageProps) {
         {/* RIGHT COLUMN - Payment Breakdown */}
         <div className="space-y-6">
           <Card>
-            <CardHeader className="bg-muted/50">
+            <CardHeader className="">
               <CardTitle>Payment Summary</CardTitle>
               <CardDescription>Breakdown of charges</CardDescription>
             </CardHeader>
@@ -219,14 +256,29 @@ export default async function ReservationDetailsPage({ params }: PageProps) {
                        <TableCell className="text-right">{cityFees.toLocaleString()}</TableCell>
                      </TableRow>
                    )}
+                   
+                   {/* Extra Mileage Fee */}
+                   {reservation.extraKmTotal !== null && reservation.extraKmTotal > 0 && (
+                    <TableRow className="">
+                      <TableCell>
+                        <span className="font-bold">Extra Mileage Fee</span>
+                        <div className="text-[10px] text-muted-foreground">
+                          {reservation.extraKmUsed} km over limit x {reservation.mileagePlan.extraKmPrice?.toFixed(2)} /km
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right font-bold">
+                        + EGP {reservation.extraKmTotal.toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  )}
 
                    {/* Total */}
-                   <TableRow className="bg-muted/50 font-bold">
-                     <TableCell>TOTAL</TableCell>
-                     <TableCell className="text-right text-lg">
-                       EGP {reservation.totalPrice.toLocaleString()}
-                     </TableCell>
-                   </TableRow>
+                   <TableRow className=" font-bold">
+                    <TableCell className="text-lg">GRAND TOTAL</TableCell>
+                    <TableCell className="text-right text-lg">
+                      EGP {(reservation.totalPrice + (reservation.extraKmTotal || 0)).toLocaleString()}
+                    </TableCell>
+                  </TableRow>
                  </TableBody>
                </Table>
             </CardContent>
@@ -245,10 +297,10 @@ export default async function ReservationDetailsPage({ params }: PageProps) {
                      <span>Status:</span>
                      <Badge variant="outline">{reservation.payment.status}</Badge>
                    </div>
-                   <div className="flex justify-between">
+                   {/* <div className="flex justify-between">
                      <span>Method:</span>
                      <span>{reservation.payment.method}</span>
-                   </div>
+                   </div> */}
                  </div>
               ) : (
                 <div className="text-center space-y-3">

@@ -16,7 +16,7 @@ export default async function ConfirmationPage({
   const { 
     from, to, pickup, return: returnCity, 
     mileage: mileage, selectedServices, telephone, 
-    street, city, status, zip, flight 
+    street, city, status, zip, flightNumber 
   } = sParams;
 
   // 2. Fetch required DB objects
@@ -61,12 +61,16 @@ export default async function ConfirmationPage({
     endDate: to,
     totalPrice: finalPrice,
     telephone,
-    flightNumber: flight,
+    flightNumber: flightNumber,
     address: { street, city, status, zip },
     services: services.map(s => ({ id: s.id, price: s.price })),
   };
 
+
+  console.log(flightNumber);
+
   return (
+    
     <main className="p-6 flex flex-col items-center w-full">
       <ConfirmCard 
         Name={car.name}
