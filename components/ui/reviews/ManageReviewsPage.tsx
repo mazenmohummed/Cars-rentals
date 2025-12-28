@@ -15,9 +15,10 @@ import { ReviewPagination } from "@/components/ui/reviews/ReviewPagination";
 
 import Image from "next/image";
 import { DeleteReviewButton } from "./DeleteReviewButton";
+import { ReviewFilter } from "./ReviewFilter";
 
 interface Props {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string, sort?: string }>;
 }
 
 export default async function ManageReviewsPage({ searchParams }: Props) {
@@ -27,13 +28,24 @@ export default async function ManageReviewsPage({ searchParams }: Props) {
   const resolvedParams = await searchParams;
   const pageSize = 10;
   const currentPage = Number(resolvedParams.page) || 1;
+  const sort = resolvedParams.sort || "newest";
+
+  // Map the URL sort string to a Prisma orderBy object
+  const getOrderBy = () => {
+    switch (sort) {
+      case "highest": return { stars: "desc" as const };
+      case "lowest": return { stars: "asc" as const };
+      case "newest": 
+      default: return { createdAt: "desc" as const };
+    }
+  };
 
   // 2. Fetch data
   const [reviews, totalCount] = await Promise.all([
     prisma.review.findMany({
       take: pageSize,
       skip: (currentPage - 1) * pageSize,
-      orderBy: { createdAt: "desc" },
+      orderBy: getOrderBy(),
     }),
     prisma.review.count(),
   ]);
@@ -47,7 +59,9 @@ export default async function ManageReviewsPage({ searchParams }: Props) {
           <h1 className="text-3xl font-bold tracking-tight">Admin: Reviews</h1>
           <p className="text-muted-foreground">Moderate and manage customer feedback.</p>
         </div>
+        {/* Place the Filter here */}
         <div className="text-right">
+          <ReviewFilter /> 
           <span className="text-2xl font-bold">{totalCount}</span>
           <p className="text-xs uppercase text-muted-foreground font-semibold">Total Reviews</p>
         </div>

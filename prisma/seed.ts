@@ -1,34 +1,23 @@
-import {prisma} from '../lib/prisma'
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 async function main() {
-  // Create a new user with a post
-  // const City = await prisma.city.create({
-  //   data: {
-  //     name: 'Hurghada',
-  //     description:'hurghada is top',
-  //     image:'https://tse4.mm.bing.net/th/id/OIP.lEjlzmcZgp-AkQHYtQcAcgHaEK?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3'
-
-
-  //     },
- //   },
-
-// )
-// This will delete any reviews where the user no longer exists
-await prisma.review.deleteMany({
+ await prisma.user.update({
   where: {
-    user: {
-      isNot: {}
-    }
+    email: "mazn39998@gmail.com"
+  },
+  data: {
+    role: "ADMIN" // Or whatever your Enum/String value is
   }
 });
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  }); // <--- CHECK IF THIS IS MISSING

@@ -14,8 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { z } from "zod";
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Sheet,
   SheetClose,
@@ -27,6 +25,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { ScrollArea } from "../scroll-area";
+import { useRouter } from "next/navigation";
+
 
 
 // Zod schema
@@ -85,6 +85,8 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
 
   const [open, setOpen] = useState(false);
 
+   const router = useRouter();
+
  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -125,7 +127,7 @@ export const AddMileagePlan: React.FC<MileagePlanFormProps> = ({ carId }) => {
 
       toast.success("Mileage Plan added 🚗");
       setOpen(false);
-
+      router.refresh();
 
       setPricePerDay("");
       setKmPerDay(null);

@@ -12,8 +12,6 @@ import { IntInput } from "../IntInput";
 import { CarType } from "./CarType";
 import { ItemContent, ItemTitle } from "../item";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { z } from "zod";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
 
 

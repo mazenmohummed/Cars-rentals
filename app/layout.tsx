@@ -28,11 +28,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased  mx-auto  justify-center w-full md:w-5/6 lg:w-5/6 xl:w-5/6`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased  mx-auto  justify-center w-full`}>
         <Providers>
+          <div className="mx-auto  justify-center w-full md:w-5/6 lg:w-5/6 xl:w-5/6">
           <HeadBar />
           {children}
           <Toaster position="top-center" />
+          </div>
           <Footer />
         </Providers>
       </body>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
 import { 
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
 } from "@/components/ui/table";
@@ -27,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"; // Ensure you have this component installed
+import { format, startOfDay } from "date-fns"; // Added startOfDay
 
 
 export default function AdminReservationsClient() {
@@ -35,6 +35,9 @@ export default function AdminReservationsClient() {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [paymentFilter, setPaymentFilter] = useState<string>("ALL");
   const [loading, setLoading] = useState(true);
+
+  const [filterStartDate, setFilterStartDate] = useState("");
+  const [filterEndDate, setFilterEndDate] = useState("");
 
   const fetchAll = async () => {
     try {
@@ -94,36 +97,56 @@ const onDelete = async (id: string) => {
   });
 };
 
-// FIX: Improved Filter Logic
-  const filtered = reservations.filter((res: any) => {
-    const fullName = `${res.user?.firstName || ""} ${res.user?.lastName || ""}`.toLowerCase();
-    const carName = (res.car?.name || "").toLowerCase();
-    const phone = res.user?.telephone || "";
-    const searchTerm = search.toLowerCase();
+// 2. Updated Filter Logic
+const filtered = reservations.filter((res: any) => {
+  const fullName = `${res.user?.firstName || ""} ${res.user?.lastName || ""}`.toLowerCase();
+  const carName = (res.car?.name || "").toLowerCase();
+  const phone = res.user?.telephone || "";
+  const searchTerm = search.toLowerCase();
 
-    const matchesSearch = 
-      fullName.includes(searchTerm) || 
-      carName.includes(searchTerm) || 
-      phone.includes(searchTerm);
+  const matchesSearch = 
+    fullName.includes(searchTerm) || 
+    carName.includes(searchTerm) || 
+    phone.includes(searchTerm);
 
-    const matchesStatus = statusFilter === "ALL" || res.status === statusFilter;
-    const matchesPayment = paymentFilter === "ALL" || (res.payment?.status || "PENDING") === paymentFilter;
+  const matchesStatus = statusFilter === "ALL" || res.status === statusFilter;
+  const matchesPayment = paymentFilter === "ALL" || (res.payment?.status || "PENDING") === paymentFilter;
 
-    return matchesSearch && matchesStatus && matchesPayment;
-  });
+  // DATE RANGE LOGIC
+  let matchesDateRange = true;
+  if (filterStartDate || filterEndDate) {
+    const resStart = startOfDay(new Date(res.startDate));
+    const resEnd = startOfDay(new Date(res.endDate));
+    
+    const afterStart = filterStartDate 
+      ? resEnd >= startOfDay(new Date(filterStartDate)) 
+      : true;
+      
+    const beforeEnd = filterEndDate 
+      ? resStart <= startOfDay(new Date(filterEndDate)) 
+      : true;
 
-  const resetFilters = () => {
-    setSearch("");
-    setStatusFilter("ALL");
-    setPaymentFilter("ALL");
-  };
+    matchesDateRange = afterStart && beforeEnd;
+  }
+
+  return matchesSearch && matchesStatus && matchesPayment && matchesDateRange;
+});
+
+// 3. Update resetFilters to clear dates
+const resetFilters = () => {
+  setSearch("");
+  setStatusFilter("ALL");
+  setPaymentFilter("ALL");
+  setFilterStartDate("");
+  setFilterEndDate("");
+};
 
   if (loading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
 
   return (
     <div className="space-y-4">
-     <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-card p-4 rounded-xl border border-border shadow-sm">
-        <div className="flex flex-col md:flex-row w-full gap-3">
+    <div className="flex flex-col gap-4 bg-card p-4 rounded-xl border border-border shadow-sm">
+        <div className="flex flex-col lg:flex-row w-full gap-3">
           {/* Search */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -135,9 +158,33 @@ const onDelete = async (id: string) => {
             />
           </div>
 
+          {/* Date Range Inputs */}
+          <div className="flex flex-col md:flex-row items-center gap-2">
+            <div className="flex items-center gap-2 w-full">
+              <span className="text-xs font-bold text-muted-foreground uppercase">From</span>
+              <Input 
+                type="date" 
+                className="bg-background w-full md:w-[150px]"
+                value={filterStartDate}
+                onChange={(e) => setFilterStartDate(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center gap-2 w-full">
+              <span className="text-xs font-bold text-muted-foreground uppercase">To</span>
+              <Input 
+                type="date" 
+                className="bg-background w-full md:w-[150px]"
+                value={filterEndDate}
+                onChange={(e) => setFilterEndDate(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 border-t pt-3">
           {/* Status Filter */}
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full md:w-[180px]">
+            <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -150,7 +197,7 @@ const onDelete = async (id: string) => {
 
           {/* Payment Filter */}
           <Select value={paymentFilter} onValueChange={setPaymentFilter}>
-            <SelectTrigger className="w-full md:w-[180px]">
+            <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Payment" />
             </SelectTrigger>
             <SelectContent>
@@ -161,15 +208,14 @@ const onDelete = async (id: string) => {
             </SelectContent>
           </Select>
 
-          {/* Reset */}
-          {(search || statusFilter !== "ALL" || paymentFilter !== "ALL") && (
-            <Button variant="ghost" onClick={resetFilters} className="h-10 px-2 lg:px-3">
-              <X className="h-4 w-4 mr-2" /> Reset
+          {/* Reset Button */}
+          {(search || statusFilter !== "ALL" || paymentFilter !== "ALL" || filterStartDate || filterEndDate) && (
+            <Button variant="ghost" onClick={resetFilters} className="h-10 px-2 lg:px-3 text-destructive hover:text-destructive">
+              <X className="h-4 w-4 mr-2" /> Reset All Filters
             </Button>
           )}
         </div>
       </div>
-
       {/* TABLE SECTION */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <Table>

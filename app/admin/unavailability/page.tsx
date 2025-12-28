@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "react-hot-toast";
-import { CalendarX, Loader2, Trash2, Plus, Pencil } from "lucide-react";
+import { CalendarX, Loader2, Trash2, Plus, Pencil, X, Search } from "lucide-react";
+import { format, isWithinInterval, startOfDay } from "date-fns";
 
 interface Car {
   id: string;
@@ -30,6 +30,12 @@ export default function UnavailabilityPage() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Filter State
+  const [searchCar, setSearchCar] = useState("");
+  const [filterDate, setFilterDate] = useState("");
+  const [filterStartDate, setFilterStartDate] = useState("");
+  const [filterEndDate, setFilterEndDate] = useState("");
   
   // Form State
   const [editId, setEditId] = useState<string | null>(null);
@@ -114,6 +120,32 @@ export default function UnavailabilityPage() {
     }
   };
 
+  // FILTER LOGIC
+  const filteredData = data.filter((item) => {
+  const matchesCar = item.car.name.toLowerCase().includes(searchCar.toLowerCase());
+  
+  let matchesDateRange = true;
+  
+  if (filterStartDate || filterEndDate) {
+    const itemStart = startOfDay(new Date(item.startDate));
+    const itemEnd = startOfDay(new Date(item.endDate));
+    
+    // If user provides a start filter, the block must end ON or AFTER that start
+    const afterStart = filterStartDate 
+      ? itemEnd >= startOfDay(new Date(filterStartDate)) 
+      : true;
+      
+    // If user provides an end filter, the block must start ON or BEFORE that end
+    const beforeEnd = filterEndDate 
+      ? itemStart <= startOfDay(new Date(filterEndDate)) 
+      : true;
+
+    matchesDateRange = afterStart && beforeEnd;
+  }
+
+  return matchesCar && matchesDateRange;
+});
+
   if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin h-8 w-8" /></div>;
 
   return (
@@ -163,6 +195,56 @@ export default function UnavailabilityPage() {
         </Dialog>
       </div>
 
+      {/* FILTER BAR */}
+      <div className="flex flex-col lg:flex-row gap-4 bg-muted/40 p-4 rounded-xl border">
+        {/* Search Car */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="Filter by car name..." 
+            className="pl-10 bg-background"
+            value={searchCar}
+            onChange={(e) => setSearchCar(e.target.value)}
+          />
+        </div>
+
+        {/* Date Range Inputs */}
+        <div className="flex flex-col md:flex-row items-center gap-2">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-bold uppercase text-muted-foreground">From</label>
+            <Input 
+              type="date" 
+              className="bg-background w-full md:w-44"
+              value={filterStartDate}
+              onChange={(e) => setFilterStartDate(e.target.value)}
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-bold uppercase text-muted-foreground">To</label>
+            <Input 
+              type="date" 
+              className="bg-background w-full md:w-44"
+              value={filterEndDate}
+              onChange={(e) => setFilterEndDate(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Reset Button */}
+        {(searchCar || filterStartDate || filterEndDate) && (
+          <Button 
+            variant="ghost" 
+            onClick={() => { 
+              setSearchCar(""); 
+              setFilterStartDate(""); 
+              setFilterEndDate(""); 
+            }}
+          >
+            <X className="h-4 w-4 mr-2" /> Reset
+          </Button>
+        )}
+</div>
+
       <div className="rounded-xl border bg-card overflow-hidden">
         <Table>
           <TableHeader>
@@ -174,14 +256,17 @@ export default function UnavailabilityPage() {
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {data.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.car.name}</TableCell>
-                <TableCell>{format(new Date(item.startDate), "PPP")}</TableCell>
-                <TableCell>{format(new Date(item.endDate), "PPP")}</TableCell>
-                <TableCell className="text-muted-foreground italic">{item.reason || "No reason provided"}</TableCell>
-                <TableCell className="text-right space-x-2">
+         <TableBody>
+            {filteredData.length > 0 ? (
+              filteredData.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-medium">{item.car.name}</TableCell>
+                  <TableCell>{format(new Date(item.startDate), "PPP")}</TableCell>
+                  <TableCell>{format(new Date(item.endDate), "PPP")}</TableCell>
+                  <TableCell className="text-muted-foreground italic">
+                    {item.reason || "No reason provided"}
+                  </TableCell>
+                  <TableCell className="text-right space-x-2">
                     <Button 
                       variant="ghost" 
                       size="icon" 
@@ -196,9 +281,16 @@ export default function UnavailabilityPage() {
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                  No results found for these filters.
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>

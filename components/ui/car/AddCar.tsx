@@ -16,13 +16,13 @@ import { CarType } from "./CarType"
 import { IntInput } from "../IntInput"
 import { useState } from "react"
 import { ItemContent, ItemTitle } from "../item"
-import { Switch } from "../switch"
-import { ImageUpload } from "../ImageUpload"
+import { Switch } from "../switch"  
 import { UploadDropzone } from "@/lib/uploadthing";
-import { AddMileagePlan } from "../mileage/AddMileagePlan"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {toast, } from "react-hot-toast"
 import { carSchema } from "@/lib/validators/car";
+import { useRouter } from "next/navigation";
+
 
 
 export function AddCar() {
@@ -38,6 +38,8 @@ export function AddCar() {
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const [open, setOpen] = useState(false);
+
+     const router = useRouter();
 
   const handleSubmit = async () => {
     setErrors({});
@@ -80,7 +82,7 @@ export function AddCar() {
 
       toast.success("Car added successfully 🚗");
       setOpen(false); // Close Sheet
-
+      router.refresh();
       // Optional: reset form
       setName("");
       setType("");
