@@ -70,17 +70,21 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-wrap items-end gap-4 p-4 border rounded-lg bg-card shadow-sm">
-        <div className="flex ">
-        <div className="px-6">
-        <div className="flex gap-4" >
+  <form 
+    onSubmit={form.handleSubmit(onSubmit)} 
+    className="flex flex-col lg:flex-row items-stretch lg:items-end gap-4 p-4 border rounded-lg bg-card shadow-sm w-full"
+  >
+    {/* MAIN CONTENT CONTAINER */}
+    <div className="flex flex-col w-full gap-4">
+      
+      {/* CITY SELECTION GROUP */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* PICKUP CITY */}
-        
         <FormField
           control={form.control}
           name="pickupCityId"
           render={({ field }) => (
-            <FormItem className="flex flex-col w-[240px]">
+            <FormItem className="flex flex-col w-full">
               <FormLabel>Pickup Location</FormLabel>
               <FormControl>
                 <CityPicker 
@@ -94,12 +98,13 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
             </FormItem>
           )}
         />
+
         {/* RETURN CITY */}
         <FormField
           control={form.control}
           name="returnCityId"
           render={({ field }) => (
-            <FormItem className="flex flex-col w-[240px]">
+            <FormItem className="flex flex-col w-full">
               <FormLabel>Return Location</FormLabel>
               <FormControl>
                 <CityPicker 
@@ -113,14 +118,16 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
             </FormItem>
           )}
         />
-        </div>
-        <div className="flex gap-4 mt-2">
+      </div>
+
+      {/* DATE SELECTION GROUP */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* PICKUP DATE */}
         <FormField 
           control={form.control}  
           name="pickupDate"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem className="flex flex-col w-full">
               <FormLabel>Pickup Date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
@@ -128,7 +135,7 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
+                        "w-full pl-3 text-left font-normal", // Changed w-[240px] to w-full
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -151,12 +158,13 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
             </FormItem>
           )}
         />
+
         {/* RETURN DATE */}
         <FormField
           control={form.control}
           name="returnDate"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem className="flex flex-col w-full">
               <FormLabel>Return Date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
@@ -164,7 +172,7 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
+                        "w-full pl-3 text-left font-normal", // Changed w-[240px] to w-full
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -174,35 +182,32 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                 <Calendar
-                  mode="single"
-                  selected={field.value}
-                  onSelect={field.onChange}
-                  disabled={(date) => {
-                    const pickupDate = form.getValues("pickupDate");
-                    
-                    // If no pickup date is selected yet, disable all past dates
-                    if (!pickupDate) return date < today;
-
-                    // Set the minimum return date to 3 days after the pickup date
-                    const minReturnDate = addDays(pickupDate, 3);
-                    
-                    return date < minReturnDate;
-                  }}
-                  autoFocus
-                />
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) => {
+                      const pickupDate = form.getValues("pickupDate");
+                      if (!pickupDate) return date < today;
+                      const minReturnDate = addDays(pickupDate, 3);
+                      return date < minReturnDate;
+                    }}
+                    autoFocus
+                  />
                 </PopoverContent>
               </Popover>
               <FormMessage />
             </FormItem>
           )}
         />
-        </div>
-        </div>
+      </div>
+    </div>
 
-        <Button type="submit" className="h-10 mx-6 my-auto">Search Available Cars</Button>
-        </div>
-      </form>
-    </Form>
+    {/* SUBMIT BUTTON */}
+    <Button type="submit" className="h-10 w-full lg:w-auto mt-2 lg:mt-0">
+      Search Available Cars
+    </Button>
+  </form>
+</Form>
   )
 }

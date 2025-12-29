@@ -40,7 +40,7 @@ const ServiceCard = ({ id, description, Name, Icon, price, isSelected, onToggle 
       className="flex items-end gap-2" 
       onClick={(e) => e.stopPropagation()}
     >
-      <span className="font-bold text-foreground">€ {price}</span>
+      <span className=" font-bold whitespace-nowrap ">€ {price}</span>
       <Switch 
         checked={isSelected} 
         onCheckedChange={() => onToggle(id)} 

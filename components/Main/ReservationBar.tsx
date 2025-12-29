@@ -35,7 +35,7 @@ export async function ReservationBar() {
 
   return (
       <div className="flex w-full items-center justify-between"> 
-       <div className="relative mx-auto w-full  ">
+       <div className=" mx-auto w-full  ">
         
     <div className="px-2 w-full mx-auto mt-12 h-auto md:w-5/6 xl:w-5/6  lg:w-5/6">
 

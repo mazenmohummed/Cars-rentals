@@ -58,14 +58,14 @@ async function onSubmit(values: ReviewFormValues) {
 }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4 border  bg-card">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4 border rounded-md bg-card">
         <FormField
           control={form.control}
           name="stars"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Rating</FormLabel>
-              <FormControl>
+              <FormLabel className="mx-auto">Rating</FormLabel>
+              <FormControl className="mx-auto">
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
@@ -93,11 +93,11 @@ async function onSubmit(values: ReviewFormValues) {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Your Review</FormLabel>
+              <FormLabel className="mx-auto">Your Review</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="Tell us about your experience..." 
-                  className="resize-none"
+                  className="resize-none max-w-lg mx-auto"
                   {...field} 
                 />
               </FormControl>
@@ -106,7 +106,7 @@ async function onSubmit(values: ReviewFormValues) {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" className="flex mx-auto" disabled={loading}>
           {loading ? "Submitting..." : "Post Review"}
         </Button>
       </form>

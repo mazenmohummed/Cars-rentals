@@ -40,13 +40,10 @@ export async function ReviewsSection({ searchParams }: Props) {
 
   return (
     <div className="space-y-8 mb-6">
-      {/* Average Stats Header */}
-      <div className="flex flex-col items-center justify-center p-8 border bg-muted/30">
-        <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Average Rating</h3>
-        <div className="flex items-baseline gap-2 mt-2">
-          <span className="text-5xl font-bold tracking-tighter">{averageRating}</span>
-          <span className="text-xl text-muted-foreground">/ 5</span>
-        </div>
+
+      {/* Sorting Controls Row */}
+      <div className="flex items-center justify-between border-b pb-4">
+        <h3 className="text-sm font-medium uppercase tracking-wider ">Average Rating</h3>
         <div className="flex mt-3 gap-1">
           {[1, 2, 3, 4, 5].map((star) => (
             <Star
@@ -60,12 +57,11 @@ export async function ReviewsSection({ searchParams }: Props) {
             />
           ))}
         </div>
+        <div className="flex items-baseline gap-2 mt-2">
+          <span className="text-5xl font-bold tracking-tighter">{averageRating}</span>
+          <span className="text-xl text-muted-foreground">/ 5</span>
+        </div>
         <p className="mt-2 text-sm text-muted-foreground">Based on {totalReviews} reviews</p>
-      </div>
-
-      {/* Sorting Controls Row */}
-      <div className="flex items-center justify-between border-b pb-4">
-        <h4 className="text-lg font-semibold">Customer Feedback</h4>
         <ReviewSort />
       </div>
 

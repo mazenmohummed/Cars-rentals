@@ -156,7 +156,7 @@ export default function ConfirmCard({
             </div>
           </ItemContent>
 
-          <ItemContent className="m-2 flex-1">
+          <ItemContent className="m-2 mx-auto  flex-1">
             <ItemTitle className="text-2xl my-2">Booking Summary</ItemTitle>
             <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-muted rounded-lg">
               <div>

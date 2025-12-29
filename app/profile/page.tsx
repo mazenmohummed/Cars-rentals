@@ -8,21 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Phone, Mail, Loader2 } from "lucide-react";
+import {  Loader2, X } from "lucide-react"; 
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 import { useUser, useAuth } from "@clerk/nextjs"; 
-import { useTheme } from "next-themes";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { ModeToggleSelect } from "@/components/HeadBar/ModeToggle";
+import { useClerk } from "@clerk/nextjs";
+import { LogOut } from "lucide-react";
 
 export default function ProfilePage() {
   const { user: clerkUser, isLoaded } = useUser();
@@ -34,7 +26,8 @@ export default function ProfilePage() {
     lastName: "",
     telephone: "",
     email: "",
-  });
+  });  
+  const { signOut } = useClerk();
 
   useEffect(() => {
     if (isAuthLoaded && !userId) {
@@ -107,6 +100,7 @@ export default function ProfilePage() {
         {/* Profile Sidebar */}
         <Card className="md:col-span-1">
           <CardHeader className="items-center text-center">
+        
             <Avatar className="w-20 h-20 mb-2">
               <AvatarImage src={clerkUser?.imageUrl} />
               <AvatarFallback>{formData.firstName?.[0]}</AvatarFallback>
@@ -122,12 +116,29 @@ export default function ProfilePage() {
           <Button>Manege Reservations</Button>
           </Link>
           </div>
+          {/* 3. New Sign Out Button */}
+            <Button 
+              variant="destructive" 
+              className="flex mx-auto gap-2"
+              onClick={() => signOut({ redirectUrl: "/" })} // Redirect to home after logout
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </Button>
         </Card>
 
         {/* Edit Form */}
         <Card className="md:col-span-2">
-          <CardHeader>
+          <CardHeader className="flex justify-between flex-row">
             <CardTitle>Settings</CardTitle>
+              <Button 
+            variant="ghost" 
+            size="icon" 
+            className="flex right-4 top-4 text-muted-foreground"
+            onClick={() => router.back()}
+          >
+            <X className="h-4 w-4" />
+          </Button>
           </CardHeader>
           <CardContent>
             <form onSubmit={onSubmit} className="space-y-4">
@@ -166,6 +177,14 @@ export default function ProfilePage() {
               <Button type="submit" disabled={loading} className="w-full md:w-auto">
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Save Changes
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => router.back()} 
+                className="w-full md:mx-6 lg:mx-6 xl:mx-6 md:w-auto"
+              >
+                Cancel
               </Button>
             </form>
           </CardContent>

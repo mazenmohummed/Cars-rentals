@@ -27,9 +27,8 @@ export default async function Home({ searchParams }: HomeProps) {
        <Action/>
        <Img/>
        <Numbers/>
-       <SignedIn>
-         <AddReviewForm/>
-       </SignedIn>
+       <Vision/>
+       <Cities/>
        <SignedOut>
         <div className="p-6 border rounded-xl bg-muted text-center">
           <p className="mb-4">Please sign in to share your experience with us.</p>
@@ -39,8 +38,9 @@ export default async function Home({ searchParams }: HomeProps) {
         </div>
       </SignedOut>
        <ReviewsSection searchParams={resolvedParams}/>
-       <Vision/>
-       <Cities/>
+       <SignedIn>
+         <AddReviewForm/>
+       </SignedIn>
        
       </main>
     </div>

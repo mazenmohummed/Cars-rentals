@@ -152,6 +152,11 @@ export function UpdateCity({ cityId, initialData }: UpdateCityProps) {
                 )}
                 <UploadDropzone
                   endpoint="carImage"
+                   appearance={{
+                    label: "text-black dark:text-white", // Changes "Choose file(s) or drag and drop"
+                    allowedContent: "text-black dark:text-white", // Changes "Images up to 4MB, max 5"
+                    button: "bg-black p-2 dark:bg-white text-white dark:text-black", // Optional: style the button
+                  }}
                   onClientUploadComplete={(res) => {
                     if (res) {
                       setImage(res[0].ufsUrl);

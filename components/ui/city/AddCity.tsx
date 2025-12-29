@@ -144,6 +144,11 @@ export function AddCity() {
                 )}
                 <UploadDropzone
                   endpoint="carImage" // Reusing your endpoint or use 'cityImage' if defined
+                   appearance={{
+                    label: "text-black dark:text-white", // Changes "Choose file(s) or drag and drop"
+                    allowedContent: "text-black dark:text-white", // Changes "Images up to 4MB, max 5"
+                    button: "bg-black p-2 dark:bg-white text-white dark:text-black", // Optional: style the button
+                  }}
                   onClientUploadComplete={(res) => {
                     if (res && res.length > 0) {
                       setImage(res[0].ufsUrl);
