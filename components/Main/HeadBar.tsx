@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react"; // Added hooks
 import { Globe, Menu } from "lucide-react";
 import Link from "next/link";
 import {
@@ -13,6 +14,21 @@ import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 export function HeadBar() {
   const { user: clerkUser } = useUser();
+  const [logo, setLogo] = useState<string | null>(null);
+
+  // Fetch logo from database
+  useEffect(() => {
+    const fetchBranding = async () => {
+      try {
+        const res = await fetch("/api/settings/homepage");
+        const data = await res.json();
+        if (data?.logo) setLogo(data.logo);
+      } catch (error) {
+        console.error("Failed to load logo", error);
+      }
+    };
+    fetchBranding();
+  }, []);
 
   return (
     <div>
@@ -20,14 +36,22 @@ export function HeadBar() {
         <div className="flex items-center justify-between px-6 w-full">
           <div className="flex items-center">
             <Link href="/">
-              <h2 className="text-xl font-bold">Cars</h2>
+              {/* REPLACE: Static text replaced with dynamic logo */}
+              {logo ? (
+                <img 
+                  src={logo} 
+                  alt="Logo" 
+                  className="h-10 w-auto object-contain" // Fixed height for navbar
+                />
+              ) : (
+                <h2 className="text-xl font-bold">Cars</h2> // Fallback if no logo
+              )}
             </Link>
           </div>
 
           <div className="flex items-center gap-4">
             <Globe className="cursor-pointer" />
 
-            {/* CASE 1: USER IS NOT LOGGED IN */}
             <SignedOut>
               <div className="flex items-center gap-2">
                 <SignInButton mode="modal">
@@ -42,7 +66,6 @@ export function HeadBar() {
               </div>
             </SignedOut>
 
-            {/* CASE 2: USER IS LOGGED IN */}
             <SignedIn>
               <Link href="/profile" className="flex items-center gap-2">
                 <Avatar className="h-10 w-10 border hover:opacity-80 transition">

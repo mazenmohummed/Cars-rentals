@@ -1,14 +1,15 @@
 
+// @/components/Numbers/NumberCard.tsx
 interface IProps {
-Title:string,
-Text:string,
+  Title: string;
+  Text: string;
 }
 
-const NumberCard = ({Title,Text}: IProps) => {
+const NumberCard = ({ Title, Text }: IProps) => {
   return (
-    <div > 
-        <h2>Global reach</h2>
-        <p>2,000+ SIXT stations in over 105 countries</p>
+    <div className="p-4 bg-white/10 rounded-lg text-white min-w-[250px]"> 
+        <h2 className="font-bold text-xl mb-1">{Title}</h2>
+        <p className="text-sm opacity-90">{Text}</p>
     </div>
   )
 }

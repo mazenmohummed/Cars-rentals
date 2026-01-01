@@ -286,3 +286,19 @@ model Review {
 
   @@index([userId])
 }
+
+model Homepage {
+  id           String   @id @default(cuid()) @map("_id")
+  logo         String
+  title1       String
+  description1 String?
+  title2       String
+  description2 String?
+  title3       String
+  description3 String?
+  mainImg      String
+  visionImg    String[]
+  vision       String
+  visionText   String
+  updatedAt    DateTime @updatedAt
+}
