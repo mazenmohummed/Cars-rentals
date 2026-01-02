@@ -35,7 +35,7 @@ export function CarCard({
   automatic,
 }: IProps) {
   return (
-    <div className="flex w-full min-w-[375px] flex-col gap-6">
+    <div className="flex w-full min-w-[300px] flex-col gap-6">
           <Item variant="outline">
             <ItemContent>
     

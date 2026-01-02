@@ -51,6 +51,8 @@ export default async function Home({ searchParams }: HomeProps) {
         
         <Cities />
 
+        <ReviewsSection searchParams={resolvedParams} />
+
         <SignedOut>
           <div className="p-6 border rounded-xl bg-muted text-center mx-6">
             <p className="mb-4">Please sign in to share your experience with us.</p>
@@ -60,8 +62,6 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
         </SignedOut>
 
-        <ReviewsSection searchParams={resolvedParams} />
-        
         <SignedIn>
           <AddReviewForm />
         </SignedIn>

@@ -166,7 +166,7 @@ return(
       update your Mileage Plan. Click save when you&apos;re done.
     </SheetDescription>
   </SheetHeader>
-  <form className="space-y-4 p-4 border rounded-md" onSubmit={updateMileagePlan} >
+  <form className="space-y-4 p-4 mx-2 border rounded-md" onSubmit={updateMileagePlan} >
   <Select
      value={planType}
     onValueChange={(value) =>

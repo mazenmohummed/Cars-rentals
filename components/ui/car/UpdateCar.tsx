@@ -235,7 +235,7 @@ const updateCar = async () => {
                   </div>   
             </ItemContent>
           </div>
-          <SheetFooter>
+          <SheetFooter className="mb-20">
             <Button type="button" onClick={updateCar}  disabled={loading}>{loading ? "Saving..." : "Save"}</Button>
             <Button variant="destructive" onClick={deleteCar}>
              Delete Car

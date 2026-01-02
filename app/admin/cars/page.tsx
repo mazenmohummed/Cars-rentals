@@ -19,18 +19,22 @@ export default async function CarPage({ params }: { params: { id: string } }) {
 
         
         
-        <div className="flex justify-center mx-auto my-4">
-          <Link href={`/admin/cars/services`}>
-          <Button className=" mx-6 w-40" children="Manage Services"/>
-          </Link>
+        <div className="flex flex-col lg:flex-row justify-center mx-auto my-4">
+          <div className="flex flex-row py-2 lg:py-4">
           <Link href={`/admin/reservations`}>
           <Button className=" mx-6 w-40" children="Manage Reservation"/>
           </Link>
           <Link href={`/admin/unavailability`}>
           <Button className=" mx-6 w-40" children="Manage unavailability"/>
           </Link>
+          </div>
+          <div className="flex flex-row py-2 lg:py-4">
+          <Link href={`/admin/cars/services`}>
+          <Button className=" mx-6 w-40" children="Manage Services"/>
+          </Link>
           <div className="mx-6 w-40">
           <AddCar  /> 
+          </div>
           </div>
         </div>
 

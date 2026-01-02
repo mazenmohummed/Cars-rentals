@@ -29,7 +29,7 @@ const ServiceCard = ({ id, description, Name, Icon, price, isSelected, onToggle 
       <div className="mt-1">{Icon}</div>
       <div className="flex flex-col items-start gap-1"> {/* flex-col stacks them */}
         <ItemTitle className="text-xl leading-none">{Name}</ItemTitle>
-        <ItemDescription className="text-sm">
+        <ItemDescription className="text-sm wrap-break-word">
           {description}
         </ItemDescription>
       </div>

@@ -22,12 +22,12 @@ const plugin = React.useRef(
       <div className="flex flex-col md:flex-row items-center gap-12">
         
         {/* LEFT SIDE: TEXT CONTENT */}
-        <div className="flex-1 space-y-6">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-primary">
+        <div className="flex-1 w-full space-y-6">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-primary break-words">
             {data.vision}
           </h2>
           <div className="w-20 h-1.5 bg-primary rounded-full" /> {/* Decorative bar */}
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed break-words">
             {data.visionText}
           </p>
         </div>

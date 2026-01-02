@@ -42,7 +42,7 @@ export async function ReviewsSection({ searchParams }: Props) {
     <div className="space-y-8 mb-6">
 
       {/* Sorting Controls Row */}
-      <div className="flex items-center justify-between border-b pb-4">
+      <div className="flex flex-col lg:flex-row items-center justify-between border-b pb-4">
         <h3 className="text-sm font-medium uppercase tracking-wider ">Average Rating</h3>
         <div className="flex mt-3 gap-1">
           {[1, 2, 3, 4, 5].map((star) => (

@@ -200,7 +200,7 @@ export function AddCar() {
                 </div>   
           </ItemContent>
         </div>
-        <SheetFooter>
+        <SheetFooter className="mb-20">
           <Button type="button" onClick={handleSubmit}  disabled={loading}>{loading ? "Saving..." : "Save"}</Button>
           <SheetClose asChild>
             <Button variant="outline">Close</Button>

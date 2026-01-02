@@ -79,7 +79,7 @@ export function OdometerForm({
       <Button 
         onClick={handleUpdate} 
         disabled={loading} 
-        className="flex w-full bg-primary hover:bg-primary/90 text-black"
+        className="flex w-full bg-primary hover:bg-primary/90 "
       >
         {loading ? "Saving Changes..." : "Save & Recalculate Fees"}
       </Button>

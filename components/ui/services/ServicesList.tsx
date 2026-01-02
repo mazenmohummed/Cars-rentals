@@ -42,7 +42,7 @@ export default function ServicesList({ services, carId, searchParams }: Services
   };
 
   return (
-    <div className="flex flex-col items-center w-full md:w-5/6 lg:w-4/6">
+    <div className="flex flex-col mx-auto items-center w-full md:w-5/6 lg:w-4/6">
       {services.map((service) => (
         <ServiceCard
           key={service.id}

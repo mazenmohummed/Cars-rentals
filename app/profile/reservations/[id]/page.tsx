@@ -24,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OdometerForm } from "@/components/Form/OdometerForm";
+import { TbBrandSpeedtest } from "react-icons/tb";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -162,9 +163,9 @@ if (!isOwner && !isAdmin) {
                <CardTitle className="text-lg">Customer Details</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex justify-between gap-4 text-sm">
+              <div className="flex flex-col lg:flex-row justify-between gap-4 text-sm">
                 <div>
-                <div>
+                 <div>
                   <p className="text-muted-foreground mb-1">Contact Info</p>
                   <div className="flex items-center gap-2">
                      <User className="h-4 w-4" />
@@ -176,9 +177,9 @@ if (!isOwner && !isAdmin) {
                   </p>
                   <p className="ml-6">{reservation.address.street}, {reservation.address.city}</p>
                   <p className="ml-6">{reservation.address.zip}</p>
-                </div>
+                 </div>
                 
-                {reservation.flightNumber && (
+                 {reservation.flightNumber && (
                   <div className="my-4">
                     <p className="text-muted-foreground mb-1">Arrival Info</p>
                     <div className="flex items-center gap-2">
@@ -186,7 +187,19 @@ if (!isOwner && !isAdmin) {
                        <span>Flight: {reservation.flightNumber}</span>
                     </div>
                   </div>
-                )}
+                 )}
+
+                 {reservation.flightNumber && (
+                  <div className="my-4">
+                    <p className="text-muted-foreground mb-1">Distance</p>
+                    <div className="flex items-center gap-2">
+                       <TbBrandSpeedtest className="h-4 w-4" />
+                       <span>Distance Traveled: {reservation.endOdometer && reservation.startOdometer 
+                        ? (reservation.endOdometer - reservation.startOdometer).toLocaleString() 
+                        : 0} km</span>
+                    </div>
+                  </div>
+                 )}
                 </div>
                 {/* Admin Only Section */}
                 {dbUser.role === "ADMIN" && (
@@ -199,16 +212,7 @@ if (!isOwner && !isAdmin) {
                     />
                   </div>
                 )}
-                <div className="mt-2 p-2 bg-muted rounded text-xs">
-                  <div className="flex justify-between">
-                    <span>Distance Traveled:</span>
-                    <span className="font-bold">
-                      {reservation.endOdometer && reservation.startOdometer 
-                        ? (reservation.endOdometer - reservation.startOdometer).toLocaleString() 
-                        : 0} km
-                    </span>
-                  </div>
-                </div>
+              
               </div>
             </CardContent>
           </Card>

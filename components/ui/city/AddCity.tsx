@@ -181,7 +181,7 @@ export function AddCity() {
               </div>
             </div>
 
-            <SheetFooter className="mt-6">
+            <SheetFooter className="mt-6 mb-20">
               <Button 
                 type="button" 
                 onClick={handleSubmit} 
@@ -190,7 +190,7 @@ export function AddCity() {
               >
                 {loading ? "Saving..." : "Save City"}
               </Button>
-              <SheetClose asChild>
+              <SheetClose  asChild>
                 <Button variant="outline">Cancel</Button>
               </SheetClose>
             </SheetFooter>

@@ -1,25 +1,14 @@
-// components/ReserveCard.jsx
 "use client";
 
-import React from "react";
-
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item"
+import React, { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Item, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
 import Link from "next/link";
-import { useState } from "react";
-import { User } from 'lucide-react';
-import { Luggage } from 'lucide-react';
+import { User, Luggage, ShieldAlert } from 'lucide-react';
 import { GiCarDoor } from "react-icons/gi";
 import { differenceInDays, parseISO } from "date-fns";
-
+import { toast } from "react-hot-toast"; // Recommended for showing the error
 
 interface IReserveCard {
  Name: string;
@@ -42,119 +31,109 @@ interface IReserveCard {
   returnCity:string | undefined,
 }
 
-
-
 export default function ReserveCard({ 
-  Name, 
-  Type, 
-  ImgUrl, 
-  Comment, 
-  unlimitedPrice,
-  limitedPrice,
-  MileageKM,
-  Id,
-  seats,
-  bags,
-  doors,
-  automatic,
-  extraKmPrice,
-  fromDate,
-  toDate,
-  cityFees,
-  pickupCity,
-  returnCity
- }: IReserveCard ) {
+  Name, Type, ImgUrl, Comment, unlimitedPrice, limitedPrice, MileageKM,
+  Id, seats, bags, doors, automatic, extraKmPrice, fromDate, toDate,
+  cityFees, pickupCity, returnCity
+}: IReserveCard) {
   
   const [Mileage, setMileage] = useState<string | null>(null);
 
-  // 1. Calculate Days
   const rentalDays = (fromDate && toDate) 
     ? Math.max(differenceInDays(parseISO(toDate), parseISO(fromDate)), 1) 
     : 1;
 
-  // 2. Determine Daily Price based on selection
-  const currentDailyPrice = Mileage === "unlimited" ? (unlimitedPrice ?? 0) : (limitedPrice ?? 0);  
-  
-  // 3. Final Calculation: (Daily * Days) + City Fees
+  const currentDailyPrice = Mileage === "unlimited" ? (unlimitedPrice ?? 0) : (limitedPrice ?? 0);   
   const totalPrice = (currentDailyPrice * rentalDays) + cityFees;
 
-  
+  // VALIDATION FUNCTION
+  const handleNextClick = (e: React.MouseEvent) => {
+    if (!Mileage) {
+      e.preventDefault(); // Stop navigation
+      toast.error("Please select a mileage option to continue");
+    }
+  };
+
   return (
+    <div className="flex py-4 w-full md:w-5/6 mx-auto h-auto px-2">
+      <Item variant="outline" className="w-full flex h-auto overflow-hidden">
+        <div className="flex w-full flex-col lg:flex-row">
 
-    <div className="flex w-full md:w-5/6 xl:w-5/6  lg:w-5/6 mx-auto  h-auto ">
-      <Item variant="outline" className=" w-full flex h-auto">
-        <div className="flex w-full flex-wrap">
-
-        <ItemContent className="m-2">
-
-            <ItemTitle className="text-2xl">{Name}</ItemTitle>
-            <ItemTitle className="text-2xl">{Type}</ItemTitle>
-            <div className="flex gap-2">
-            <Badge variant="outline"><User />{seats}</Badge>
-            <Badge variant="outline"><Luggage />{bags}</Badge>
-            <Badge variant="outline"><GiCarDoor />{doors}</Badge>
-            {automatic && <Badge>Automatic</Badge>}
+          {/* LEFT SIDE: Car Details */}
+          <ItemContent className="m-2 flex-1">
+            <ItemTitle className="text-xl sm:text-2xl font-bold">{Name} <span className="text-muted-foreground font-normal">{Type}</span></ItemTitle>
+            
+            <div className="flex flex-wrap gap-2 my-2">
+              <Badge variant="outline" className="gap-1"><User size={14}/>{seats}</Badge>
+              <Badge variant="outline" className="gap-1"><Luggage size={14}/>{bags}</Badge>
+              <Badge variant="outline" className="gap-1"><GiCarDoor size={14}/>{doors}</Badge>
+              {automatic && <Badge>Automatic</Badge>}
             </div>
-                 <div className="relative mx-auto w-full pb-4 ">
-                    <img 
-                    src={ImgUrl} 
-                    alt={Name}
-                    className=" object-cover"
-                    />
-                 </div>
+
+            <div className="relative mx-auto w-full py-4">
+              <img src={ImgUrl} alt={Name} className="mx-auto" />
+            </div>
           
-          
-          <ItemDescription>
-            {Comment}
-          </ItemDescription>
-          
-           {/* Daily price */}
-          <div className="flex items-end gap-2">
-             <div className="flex items-baseline gap-1">
-               <span className="text-sm font-medium ">€</span>
-               <span className="text-3xl font-bold ">{currentDailyPrice}</span>
-               <span className="text-sm ">/day</span>
-             </div>
+            <ItemDescription className="mb-4">{Comment}</ItemDescription>
+            
+            <div className="flex flex-col sm:flex-row sm:items-end gap-2 border-t pt-4">
+               <div className="flex items-baseline gap-1">
+                 <span className="text-sm font-medium">€</span>
+                 <span className="text-3xl font-bold">{currentDailyPrice}</span>
+                 <span className="text-sm">/day</span>
+               </div>
+               <span className="text-sm text-muted-foreground">€ {totalPrice} total for {rentalDays} days</span>
+            </div>
+          </ItemContent>
+
+          {/* RIGHT SIDE: Mileage Selection */}
+          <ItemContent className="m-2 lg:m-auto border-t lg:border-t-0 lg:border-l pt-6 lg:pt-0 lg:pl-6 flex-1">
+            <ItemTitle className="text-xl mb-4">Select Mileage</ItemTitle>
+            
+            <div className="space-y-4">
+              {/* Unlimited Option */}
+              <Item 
+                variant="outline" 
+                className={`w-full cursor-pointer transition-all ${Mileage === "unlimited" ? "ring-2 ring-primary bg-primary/5" : ""}`}
+                onClick={() => setMileage("unlimited")} 
+              >
+                <ItemContent className="p-3 min-w-[300px]">
+                  <ItemTitle className="text-lg">Unlimited</ItemTitle>
+                  <ItemDescription className="text-xs">All kilometers included</ItemDescription>
+                </ItemContent>
+              </Item>
+
+              {/* Limited Option */}
+              <Item 
+                variant="outline" 
+                className={`w-full cursor-pointer transition-all ${Mileage === `${MileageKM}` ? "ring-2 ring-primary bg-primary/5" : ""}`}
+                onClick={() => setMileage(`${MileageKM}`)} 
+              >
+                <ItemContent className="p-3">
+                  <ItemTitle className="text-lg">{MileageKM} KM</ItemTitle>
+                  <ItemDescription className="text-xs">+€{extraKmPrice}/extra km</ItemDescription>
+                </ItemContent>
+              </Item>
+
+              {/* Next Button with Validation */}
+              <Link 
+                href={`/cars/${Id}/services?from=${fromDate}&to=${toDate}&pickup=${pickupCity}&return=${returnCity}&mileage=${Mileage}`}
+                onClick={handleNextClick}
+                className="block"
+              >
+                <Button className={`w-full h-12 text-lg shadow-lg ${!Mileage ? "opacity-50 cursor-not-allowed" : "animate-pulse-subtle"}`}>
+                  Next
+                </Button>
+              </Link>
               
-             {/* Total price */}
-             <span className="text-sm ">€ {totalPrice} total</span>
-
-               
-
-           </div>
-
-        </ItemContent>
-        <ItemContent className="m-2">
-          <ItemTitle className="text-2xl mx-6 ">Mileage</ItemTitle>
-          <div className="rid content-end h-full">
-          <Item variant="outline"  className={`my-6 w-96 cursor-pointer ${
-        Mileage === "unlimited" ? "ring-2  dark:ring-white ring-black" : ""
-      }`}
-      onClick={() => setMileage ("unlimited")} >
-            <ItemContent>
-            <ItemTitle className="text-2xl " >Unlimted</ItemTitle>
-             <ItemDescription >
-            All kilometers are included in the price
-          </ItemDescription>
-            </ItemContent>
-          </Item>
-          <Item variant="outline" className={`my-6 w-96 cursor-pointer ${
-        Mileage === `${MileageKM}`? "ring-2  dark:ring-white ring-black" : ""
-      }`}
-      onClick={() => setMileage (`${MileageKM}`)} >
-            <ItemContent>
-            <ItemTitle className="text-2xl">{MileageKM} KM</ItemTitle>
-            <ItemDescription>
-            +€ {extraKmPrice} / for every additional km
-          </ItemDescription>
-            </ItemContent>
-          </Item>
-          <Link href={`/cars/${Id}/services?from=${fromDate}&to=${toDate}&pickup=${pickupCity}&return=${returnCity}&mileage=${Mileage}`}>
-        <Button className="mx-6 w-40">Next</Button>
-      </Link>
-          </div>
-        </ItemContent>
-      </div>
+              {!Mileage && (
+                <p className="text-[10px] text-center text-red-500 flex items-center justify-center gap-1">
+                  <ShieldAlert size={12} /> Please select an option to proceed
+                </p>
+              )}
+            </div>
+          </ItemContent>
+        </div>
       </Item>
     </div>
   );

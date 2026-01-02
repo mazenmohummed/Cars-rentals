@@ -184,7 +184,7 @@ export function UpdateCity({ cityId, initialData }: UpdateCityProps) {
               </div>
             </div>
 
-            <SheetFooter className="mt-6 flex-col gap-2">
+            <SheetFooter className="mt-6 mb-20 flex-col gap-2">
               <Button onClick={handleUpdate} disabled={loading} className="w-full">
                 {loading ? "Updating..." : "Update City"}
               </Button>

@@ -13,24 +13,37 @@ interface NumbersProps {
 }
 
 export function Numbers({ data }: NumbersProps) {
-  // Fallback data in case the database is empty
   if (!data) return null;
 
   return (
-    <div className="flex mx-auto gap-4 justify-center w-full py-6 bg-gray-600">
-      <div className="flex flex-wrap px-2 gap-4 py-6">
-        <NumberCard 
-          Title={data.title1} 
-          Text={data.description1 || ""} 
-        /> 
-        <NumberCard 
-          Title={data.title2} 
-          Text={data.description2 || ""} 
-        />
-        <NumberCard 
-          Title={data.title3} 
-          Text={data.description3 || ""} 
-        />
+    // Changed: Added overflow-hidden to prevent side-scrolling
+    // Changed: Used w-full to ensure it doesn't exceed screen width
+    <div className="w-full py-10 bg-gray-600 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* flex-col: Stack cards on top of each other on mobile
+           md:flex-row: Side-by-side on tablets and desktops
+           items-center: Centers the cards when stacked
+        */}
+        <div className="flex flex-col lg:flex-row justify-center items-center gap-6 md:gap-12">
+          <NumberCard 
+            Title={data.title1} 
+            Text={data.description1 || ""} 
+          /> 
+          {/* Added a subtle divider for mobile only */}
+          <div className="w-16 h-[1px] bg-gray-500 md:hidden" />
+          
+          <NumberCard 
+            Title={data.title2} 
+            Text={data.description2 || ""} 
+          />
+          
+          <div className="w-16 h-[1px] bg-gray-500 md:hidden" />
+          
+          <NumberCard 
+            Title={data.title3} 
+            Text={data.description3 || ""} 
+          />
+        </div>
       </div>
     </div>
   )
