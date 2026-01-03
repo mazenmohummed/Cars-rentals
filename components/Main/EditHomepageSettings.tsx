@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { toast } from "react-hot-toast";
 import { Settings, Loader2, X } from "lucide-react";
+import Image from "next/image";
 
 export function EditHomepageSettings({ initialData }: { initialData?: any }) {
   const [loading, setLoading] = useState(false);
@@ -76,7 +77,14 @@ export function EditHomepageSettings({ initialData }: { initialData?: any }) {
               <Label className="font-bold">Company Logo</Label>
               {formData.logo && (
                 <div className="border rounded-md p-2 w-fit bg-muted/50">
-                  <img src={formData.logo} className="h-10 object-contain" />
+                  <Image 
+                      src={formData.logo} 
+                      alt="Company Logo"
+                      fill // Makes the image fill the container
+                      className="object-contain" // Keeps the logo from stretching
+                      priority // Since a logo is usually at the top, it needs to load fast
+                      sizes="(max-width: 768px) 100px, 150px"
+                    />
                 </div>
               )}
               <UploadDropzone 
@@ -136,7 +144,13 @@ export function EditHomepageSettings({ initialData }: { initialData?: any }) {
               <div className="space-y-4">
                 <Label className="font-bold">Hero Main Image</Label>
                 {formData.mainImg && (
-                  <img src={formData.mainImg} className="h-40 w-full object-cover rounded-md border" />
+                  <Image 
+                      src={formData.mainImg} 
+                      alt="Company Logo"
+                      fill // Makes the image fill the container
+                      className="h-40 w-full object-cover rounded-md border" // Keeps the logo from stretching
+                      sizes="(max-width: 768px) 100px, 150px"
+                    />
                 )}
                 <UploadDropzone
                   appearance={{
@@ -173,7 +187,14 @@ export function EditHomepageSettings({ initialData }: { initialData?: any }) {
                     <div className="flex flex-nowrap gap-3 min-w-max">
                       {formData.visionImg.map((url: string, i: number) => (
                         <div key={i} className="relative w-24 h-24 flex-shrink-0">
-                          <img src={url} className="h-full w-full object-cover rounded-lg border bg-white" alt={`Preview ${i}`} />
+                          <Image
+                              src={url}
+                              alt={`Preview ${i}`}
+                              fill
+                              className="h-full w-full object-cover rounded-lg border bg-white"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              // priority={i === 0} // Add this if it's the first image the user sees
+                            />
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, visionImg: formData.visionImg.filter((_: string, index: number) => index !== i)})} 

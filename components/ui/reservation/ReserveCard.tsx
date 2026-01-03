@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Item, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
 import Link from "next/link";
-import { User, Luggage, ShieldAlert } from 'lucide-react';
+import { User, Luggage, ShieldAlert, Loader2 } from 'lucide-react';
 import { GiCarDoor } from "react-icons/gi";
 import { differenceInDays, parseISO } from "date-fns";
 import { toast } from "react-hot-toast"; // Recommended for showing the error
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface IReserveCard {
  Name: string;
@@ -37,8 +39,9 @@ export default function ReserveCard({
   cityFees, pickupCity, returnCity
 }: IReserveCard) {
   
+  const router = useRouter();
   const [Mileage, setMileage] = useState<string | null>(null);
-
+  const [isPending, startTransition] = useTransition();
   const rentalDays = (fromDate && toDate) 
     ? Math.max(differenceInDays(parseISO(toDate), parseISO(fromDate)), 1) 
     : 1;
@@ -52,6 +55,10 @@ export default function ReserveCard({
       e.preventDefault(); // Stop navigation
       toast.error("Please select a mileage option to continue");
     }
+    startTransition(() => {
+      const url = `/cars/${Id}/services?from=${fromDate}&to=${toDate}&pickup=${pickupCity}&return=${returnCity}&mileage=${Mileage === "unlimited" ? "unlimited" : "limited"}`;
+      router.push(url);
+    });
   };
 
   return (
@@ -70,8 +77,15 @@ export default function ReserveCard({
               {automatic && <Badge>Automatic</Badge>}
             </div>
 
-            <div className="relative mx-auto w-full py-4">
-              <img src={ImgUrl} alt={Name} className="mx-auto" />
+            <div className="relative w-full aspect-video sm:aspect-[16/9] lg:aspect-auto lg:h-64 overflow-hidden rounded-lg">
+              <Image
+                src={ImgUrl}
+                alt={Name} 
+                fill 
+                priority 
+                className="object-contain" // Changed from object-cover to contain to ensure the whole car is visible
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
             </div>
           
             <ItemDescription className="mb-4">{Comment}</ItemDescription>
@@ -92,39 +106,40 @@ export default function ReserveCard({
             
             <div className="space-y-4">
               {/* Unlimited Option */}
-              <Item 
-                variant="outline" 
-                className={`w-full cursor-pointer transition-all ${Mileage === "unlimited" ? "ring-2 ring-primary bg-primary/5" : ""}`}
+              <button 
+                disabled={isPending}
+                className={`w-full text-left rounded-lg border p-3 transition-all ${Mileage === "unlimited" ? "ring-2 ring-primary bg-primary/5 border-primary" : "border-input"} ${isPending ? "cursor-not-allowed" : ""}`}
                 onClick={() => setMileage("unlimited")} 
               >
-                <ItemContent className="p-3 min-w-[300px]">
-                  <ItemTitle className="text-lg">Unlimited</ItemTitle>
-                  <ItemDescription className="text-xs">All kilometers included</ItemDescription>
-                </ItemContent>
-              </Item>
+                <div className="font-semibold text-lg">Unlimited</div>
+                <div className="text-xs text-muted-foreground">All kilometers included</div>
+              </button>
 
               {/* Limited Option */}
-              <Item 
-                variant="outline" 
-                className={`w-full cursor-pointer transition-all ${Mileage === `${MileageKM}` ? "ring-2 ring-primary bg-primary/5" : ""}`}
-                onClick={() => setMileage(`${MileageKM}`)} 
+              <button 
+                disabled={isPending}
+                className={`w-full text-left rounded-lg border p-3 transition-all ${Mileage === "limited" ? "ring-2 ring-primary bg-primary/5 border-primary" : "border-input"} ${isPending ? "cursor-not-allowed" : ""}`}
+                onClick={() => setMileage("limited")} 
               >
-                <ItemContent className="p-3">
-                  <ItemTitle className="text-lg">{MileageKM} KM</ItemTitle>
-                  <ItemDescription className="text-xs">+€{extraKmPrice}/extra km</ItemDescription>
-                </ItemContent>
-              </Item>
+                <div className="font-semibold text-lg">{MileageKM} KM</div>
+                <div className="text-xs text-muted-foreground">+€{extraKmPrice}/extra km</div>
+              </button>
 
-              {/* Next Button with Validation */}
-              <Link 
-                href={`/cars/${Id}/services?from=${fromDate}&to=${toDate}&pickup=${pickupCity}&return=${returnCity}&mileage=${Mileage}`}
+              {/* Next Button with Loading Spinner */}
+              <Button 
                 onClick={handleNextClick}
-                className="block"
+                disabled={!Mileage || isPending}
+                className="w-full h-12 text-lg shadow-lg relative"
               >
-                <Button className={`w-full h-12 text-lg shadow-lg ${!Mileage ? "opacity-50 cursor-not-allowed" : "animate-pulse-subtle"}`}>
-                  Next
-                </Button>
-              </Link>
+                {isPending ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    Calculating...
+                  </div>
+                ) : (
+                  "Next"
+                )}
+              </Button>
               
               {!Mileage && (
                 <p className="text-[10px] text-center text-red-500 flex items-center justify-center gap-1">

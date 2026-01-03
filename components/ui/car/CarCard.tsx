@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { User } from 'lucide-react';
 import { Luggage } from 'lucide-react';
 import { GiCarDoor } from "react-icons/gi";
+import Image from "next/image";
 
 interface IProps {
 Name:string,
@@ -48,11 +49,14 @@ export function CarCard({
                 {automatic && <Badge>Automatic</Badge>}
                 </div>
                      <div className="relative w-full aspect-video overflow-hidden rounded-lg">
-                        <img 
-                        src={ImgUrl} 
-                        alt={Name}
-                        className=" absolute inset-0 w-full h-full object-cover"
-                        />
+                       <Image 
+                            src={ImgUrl} 
+                            alt={Name}
+                            width={400} // Set the actual width it appears on screen
+                            height={300}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover"
+                          />
                      </div>
               
               

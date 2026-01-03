@@ -1,12 +1,12 @@
 "use client"
 
+import { useTransition } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { addDays, format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-
+import { CalendarIcon, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -42,6 +42,7 @@ interface CarSearchFormProps {
 
 export function CarSearchForm({ cities }: CarSearchFormProps) {
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -49,8 +50,10 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
       returnCityId: "",
     }
   })
+  const isLoading = form.formState.isSubmitting || isPending;
+  const { isSubmitting } = form.formState;
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     const from = format(data.pickupDate, "yyyy-MM-dd")
     const to = format(data.returnDate, "yyyy-MM-dd")
     
@@ -62,7 +65,10 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
       returnCityId: data.returnCityId,
     })
 
-    router.push(`/cars?${params.toString()}`)
+    startTransition(() => {
+      router.push(`/cars?${params.toString()}`)
+    })
+  
   }
 
   const today = new Date()
@@ -204,9 +210,20 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
     </div>
 
     {/* SUBMIT BUTTON */}
-    <Button type="submit" className="h-10 w-full lg:w-auto mt-2 lg:mt-0">
-      Search Available Cars
-    </Button>
+    <Button 
+          type="submit" 
+          disabled={isLoading} 
+          className="h-10 w-full lg:w-auto mt-2 lg:mt-0 min-w-[160px]"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Searching...
+            </>
+          ) : (
+            "Search Available Cars"
+          )}
+        </Button>
   </form>
 </Form>
   )

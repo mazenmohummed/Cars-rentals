@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Action = () => {
   return (
-    <div className="flex mx-auto justify-center w-full" >
+    <div className="flex mx-auto justify-center py-4 w-full" >
       <div className="flex flex-col items-center gap-3">
         <h1 className=" text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl ">Start your raid now</h1>
         <Link className="flex items-center " 

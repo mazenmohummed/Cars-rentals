@@ -15,6 +15,7 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 import { UpdateCity, UpdateCityProps } from "./UpdateCity"
+import Image from "next/image"
 
 
 
@@ -24,11 +25,14 @@ export function AdminCityCard({cityId,initialData}: UpdateCityProps) {
       <Item variant="outline">
         <ItemContent>          
                  <div className="relative w-full aspect-video overflow-hidden rounded-lg">
-                    <img 
-                    src={initialData.image} 
-                    alt={initialData.name}
-                    className=" absolute inset-0 w-full h-full object-cover"
-                    />
+                    <Image
+                        src={initialData.image}
+                        alt={initialData.name}
+                        fill // Replaces h-full w-full
+                        priority // Use this if this image is at the top of the page (LCP fix)
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
                  </div>
           <ItemTitle className="text-2xl">{initialData.name}</ItemTitle>
           

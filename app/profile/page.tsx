@@ -83,13 +83,6 @@ export default function ProfilePage() {
   };
 
   
-  if (!isLoaded || !isAuthLoaded) {
-    return (
-      <div className="flex justify-center py-20">
-        <Loader2 className="animate-spin h-8 w-8 text-primary" />
-      </div>
-    );
-  }
 
   if (!userId) return null;
 

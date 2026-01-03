@@ -2,6 +2,7 @@
 
 import { UploadButton } from "@uploadthing/react";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
+import Image from "next/image";
 
 interface ImageUploadProps {
   value?: string[]; // current uploaded image URLs
@@ -27,7 +28,14 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ value = [], onChange, 
       />
       <div className="mt-2 flex flex-wrap gap-2">
         {value.map((url, i) => (
-          <img key={i} src={url} alt={`Uploaded ${i}`} className="w-24 h-24 object-cover rounded" />
+          <Image 
+              key={i}
+              src={url} 
+              alt={`Uploaded ${i}`} 
+              fill
+              className="w-24 h-24 object-cover rounded"
+              sizes="100px" 
+            />
         ))}
       </div>
     </div>

@@ -12,6 +12,7 @@ import { Button } from "../button";
 import { AddMileagePlan } from "../mileage/AddMileagePlan";
 import { ICarData, UpdateCar } from "./UpdateCar";
 import {IMileagePlanData, UpdateMileagePlan} from "../mileage/UpdateMileagePlan";
+import Image from "next/image";
 
 
 
@@ -69,10 +70,15 @@ export function AdminCarCard({
             {automatic && <Badge>Automatic</Badge>}
             </div>
                  <div className="relative w-full aspect-video overflow-hidden rounded-lg">
-                    <img 
-                    src={ImgUrl} 
-                    alt={Name}
-                    className=" absolute inset-0 w-full h-full object-cover"
+                    <Image 
+                      src={ImgUrl} 
+                      alt={Name}
+                      fill // Replaces w-full h-full
+                      className="absolute inset-0 object-cover"
+                      // Since this is likely a car card, use a moderate size to save data
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      // If this car card is at the very top of the list, consider adding priority
+                      // priority 
                     />
                  </div>
           

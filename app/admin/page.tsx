@@ -1,6 +1,5 @@
 import Action from "@/components/Main/Action";
 import Cities from "@/components/Main/Cities";
-// import Img from "@/components/Main/Img"; <--- Removed this
 import { Numbers } from "@/components/Main/Numbers"
 import { ReservationBar } from "@/components/Main/ReservationBar";
 import Vision from "@/components/Main/Vision";
@@ -11,6 +10,7 @@ import { ReviewsSection } from "@/components/ui/reviews/ReviewsSection";
 import { EditHomepageSettings } from "@/components/Main/EditHomepageSettings";
 import { prisma } from "@/lib/prisma"; // Import your prisma instance
 import { requireAdmin } from "@/lib/auth"
+import Image from "next/image";
 
 interface HomeProps {
   searchParams: Promise<{ sort?: string }>;
@@ -39,16 +39,19 @@ export default async function Home({ searchParams }: HomeProps) {
 
         {/* 2. Dynamic Hero Section */}
         {homepageData?.mainImg && (
-          <section className="flex w-full items-center justify-between">
+          <section className="relative w-full h-[60vh] md:h-[85vh] overflow-hidden">
             {/* The Background Image */}
-           <div className="relative mx-auto w-full ">
-            <img
-              src={homepageData.mainImg}
-              alt="Hero Background"
-              className="object-cover" 
-              // object-cover ensures the image isn't stretched/blurry
+           
+            <Image 
+              src={homepageData.mainImg} 
+                alt="Premium Car Rental"
+                fill
+                priority
+                quality={85}
+                className="object-cover z-0" // z-0 puts it at the bottom
+                sizes="100vw"
             />
-           </div>
+          
           </section>
         )}
         <Numbers data={homepageData} />

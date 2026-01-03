@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table";
 import { OdometerForm } from "@/components/Form/OdometerForm";
 import { TbBrandSpeedtest } from "react-icons/tb";
+import Image from "next/image";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -114,11 +115,14 @@ if (!isOwner && !isAdmin) {
             <CardContent className="space-y-6">
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="w-full md:w-1/3 aspect-video bg-muted rounded-lg overflow-hidden relative">
-                   <img 
+                   <Image 
                       src={reservation.car.mainImage} 
-                      alt={reservation.car.name} 
-                      className="object-cover w-full h-full"
-                   />
+                      alt={reservation.car.name}
+                      width={400} // Set the actual width it appears on screen
+                      height={300}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover"
+                    />
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-xl font-bold">{reservation.car.name}</h3>
@@ -233,7 +237,7 @@ if (!isOwner && !isAdmin) {
                      <TableCell>
                         <span className="font-medium">Car Rental</span>
                         <div className="text-xs text-muted-foreground">
-                          {days} days x EGP {reservation.mileagePlan.pricePerDay}
+                          {days} days x € {reservation.mileagePlan.pricePerDay}
                         </div>
                      </TableCell>
                      <TableCell className="text-right">
@@ -271,7 +275,7 @@ if (!isOwner && !isAdmin) {
                         </div>
                       </TableCell>
                       <TableCell className="text-right font-bold">
-                        + EGP {reservation.extraKmTotal.toLocaleString()}
+                        + € {reservation.extraKmTotal.toLocaleString()}
                       </TableCell>
                     </TableRow>
                   )}
@@ -280,7 +284,7 @@ if (!isOwner && !isAdmin) {
                    <TableRow className=" font-bold">
                     <TableCell className="text-lg">GRAND TOTAL</TableCell>
                     <TableCell className="text-right text-lg">
-                      EGP {(reservation.totalPrice + (reservation.extraKmTotal || 0)).toLocaleString()}
+                      € {(reservation.totalPrice + (reservation.extraKmTotal || 0)).toLocaleString()}
                     </TableCell>
                   </TableRow>
                  </TableBody>

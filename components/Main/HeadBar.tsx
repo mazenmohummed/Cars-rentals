@@ -11,6 +11,7 @@ import {
   useUser,
 } from '@clerk/nextjs'
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import Image from "next/image";
 
 export function HeadBar() {
   const { user: clerkUser } = useUser();
@@ -38,11 +39,16 @@ export function HeadBar() {
             <Link href="/">
               {/* REPLACE: Static text replaced with dynamic logo */}
               {logo ? (
-                <img 
-                  src={logo} 
-                  alt="Logo" 
-                  className="h-10 w-auto object-contain" // Fixed height for navbar
-                />
+              <div className="relative h-10 w-32"> 
+                  <Image 
+                    src={logo} 
+                    alt="Logo" 
+                    fill
+                    priority 
+                    className="object-contain" 
+                    sizes="(max-width: 768px) 100px, 150px"
+                  />
+                </div>
               ) : (
                 <h2 className="text-xl font-bold">Cars</h2> // Fallback if no logo
               )}

@@ -22,6 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import {toast, } from "react-hot-toast"
 import { carSchema } from "@/lib/validators/car";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 
 
@@ -109,7 +110,7 @@ export function AddCar() {
       <SheetTrigger asChild>
         <Button type="button" className="w-40">Add Car</Button>
       </SheetTrigger>
-      <SheetContent className="flex h-screen flex-col">
+      <SheetContent className="flex h-screen w-full  flex-col">
         <div className="flex-1 overflow-y-auto px-4">
       <ScrollArea className=" ">
         <SheetHeader>
@@ -167,10 +168,15 @@ export function AddCar() {
              <Label>Car Image</Label>
              {images && (
                   <div className="relative aspect-video w-full overflow-hidden rounded-lg border">
-                    <img 
-                      src={images[0]} 
-                      alt="Preview" 
-                      className="h-full w-full object-cover"
+                   <Image
+                      src={images[0]}
+                      alt="Preview"
+                      fill
+                      // Since this is images[0], it's the first thing the user sees. 
+                      // Setting priority to true drastically improves your LCP score.
+                      priority 
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
                 )}

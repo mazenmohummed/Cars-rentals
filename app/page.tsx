@@ -10,6 +10,7 @@ import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { ReviewsSection } from "@/components/ui/reviews/ReviewsSection";
 import { EditHomepageSettings } from "@/components/Main/EditHomepageSettings";
 import { prisma } from "@/lib/prisma"; // Import your prisma instance
+import Image from "next/image";
 
 interface HomeProps {
   searchParams: Promise<{ sort?: string }>;
@@ -31,19 +32,21 @@ export default async function Home({ searchParams }: HomeProps) {
         <Action />
 
         {/* 2. Dynamic Hero Section */}
-        {homepageData?.mainImg && (
-          <section className="flex w-full items-center justify-between">
-            {/* The Background Image */}
-           <div className="relative mx-auto w-full ">
-            <img
-              src={homepageData.mainImg}
-              alt="Hero Background"
-              className="object-cover" 
-              // object-cover ensures the image isn't stretched/blurry
-            />
-           </div>
-          </section>
-        )}
+        <section className="relative w-full h-[50vh] sm:h-[60vh] md:h-[85vh] overflow-hidden bg-muted">
+          <Image 
+            src={homepageData?.mainImg || "/hero-car.jpg"} 
+            alt="Premium Car Rental"
+            fill
+            priority
+            quality={90} // Slightly higher for retina mobile screens
+            className="object-contain z-0" 
+            sizes="100vw"
+            // Using 'eager' loading implicitly via priority
+          />
+          
+          {/* Optional: Add a mobile-only gradient overlay if you have text over the image */}
+          <div className="absolute inset-0 bg-black/20 md:bg-transparent z-10" />
+        </section>
         <Numbers data={homepageData} />
         
         {/* Pass data to Vision so it can show the vision text and images */}

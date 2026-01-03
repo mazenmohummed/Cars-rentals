@@ -20,7 +20,7 @@ export default async function ManageServicesPage() {
 
       <div className="grid gap-4">
         {services.map((service) => (
-          <div key={service.id} className="flex flex-col items-center justify-between p-4 border rounded-xl bg-card shadow-sm">
+          <div key={service.id} className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-xl bg-card shadow-sm">
             <div className="flex items-center gap-4">
               <Settings2 className="h-5 w-5 text-primary" />
               <div>

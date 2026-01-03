@@ -4,6 +4,7 @@ import Link from "next/link"
 import { differenceInDays, parseISO, startOfDay } from "date-fns";
 import { SearchX, PhoneCall } from "lucide-react"; // Icons for the empty state
 import { Button } from "@/components/ui/button";
+import { CarCardLink } from "@/components/ui/car/CarCardLink"
 
 export interface CarsProps {
   searchParams: { 
@@ -116,12 +117,10 @@ const Cars = async ({ searchParams }: CarsProps) => {
           const dailyPrice = limitedPlan?.pricePerDay ?? 0;
           const totalCalculation = (dailyPrice * rentalDays) + totalCityFees;
 
+          const detailHref = `/cars/${car.id}?from=${from}&to=${to}&pickup=${pickupCityId}&return=${returnCityId}`;
+
           return (
-            <Link 
-              key={car.id} 
-              href={`/cars/${car.id}?from=${from}&to=${to}&pickup=${pickupCityId}&return=${returnCityId}`}
-              className="block transition-transform hover:scale-[1.02]"
-            >
+            <CarCardLink key={car.id} href={detailHref}>
               <CarCard
                 Name={car.name}
                 Type={car.type}
@@ -134,7 +133,7 @@ const Cars = async ({ searchParams }: CarsProps) => {
                 doors={car.doors ?? 0}
                 seats={car.seats ?? 0}
               />
-            </Link>
+           </CarCardLink>
           );
         })}
       </div>

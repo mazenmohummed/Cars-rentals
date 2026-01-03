@@ -1,21 +1,24 @@
 "use client";
 
 import * as React from "react";
-import Autoplay from "embla-carousel-autoplay"; // Import the plugin
+import Autoplay from "embla-carousel-autoplay";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import Image from "next/image";
 
 export default function Vision({ data }: { data: any }) {
-  // Setup the Autoplay plugin for 2 seconds (2000ms)
-const plugin = React.useRef(
+  const plugin = React.useRef(
     Autoplay({ delay: 3000, stopOnInteraction: false })
   );
 
-  if (!data || !data.visionImg) return null;
+  // 1. Better safety check: Ensure visionImg is an array and has items
+  if (!data || !data.visionImg || !Array.isArray(data.visionImg) || data.visionImg.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-20 px-6 max-w-7xl mx-auto">
@@ -26,7 +29,7 @@ const plugin = React.useRef(
           <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-primary break-words">
             {data.vision}
           </h2>
-          <div className="w-20 h-1.5 bg-primary rounded-full" /> {/* Decorative bar */}
+          <div className="w-20 h-1.5 bg-primary rounded-full" />
           <p className="text-lg md:text-xl text-muted-foreground leading-relaxed break-words">
             {data.visionText}
           </p>
@@ -41,15 +44,20 @@ const plugin = React.useRef(
             onMouseLeave={() => plugin.current.play()}
           >
             <CarouselContent>
-              {data.visionImg?.map((url: string, index: number) => (
+              {data.visionImg.map((url: string, index: number) => (
                 <CarouselItem key={index}>
                   <div className="p-1">
                     <Card className="border-none shadow-none bg-transparent">
-                      <CardContent className="flex aspect-square items-center justify-center p-0 overflow-hidden rounded-3xl shadow-2xl ">
-                        <img
+                      {/* 2. Added 'relative' to CardContent - REQUIRED for 'fill' to work */}
+                      <CardContent className="relative flex aspect-square items-center justify-center p-0 overflow-hidden rounded-3xl shadow-2xl bg-muted">
+                        <Image
                           src={url}
                           alt={`Vision Slide ${index}`}
-                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                          fill
+                          priority={index === 0} 
+                          className="object-cover transition-transform duration-500 hover:scale-105"
+                          // 3. Adjusted sizes for better performance
+                          sizes="(max-width: 768px) 100vw, 500px"
                         />
                       </CardContent>
                     </Card>
@@ -59,7 +67,6 @@ const plugin = React.useRef(
             </CarouselContent>
           </Carousel>
         </div>
-
       </div>
     </section>
   );

@@ -6,7 +6,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Button } from "./button";
 import { Item, ItemContent, ItemDescription, ItemTitle } from "./item";
 import { Badge } from "./badge";
-import { User, Luggage } from "lucide-react";
+import { User, Luggage, Loader2 } from "lucide-react";
 import { Label } from "./label";
 import { 
   Table, 
@@ -21,6 +21,7 @@ import {
 import { differenceInDays, parseISO } from "date-fns";
 import { useState, useEffect } from "react";
 import { GiCarDoor } from "react-icons/gi";
+import Image from "next/image";
 
 // Define a proper interface for the incoming props
 interface ConfirmCardProps {
@@ -108,6 +109,8 @@ export default function ConfirmCard({
       return;
     }
 
+
+
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/reservations", {
@@ -143,8 +146,16 @@ export default function ConfirmCard({
               <Badge variant="outline"><GiCarDoor className="w-4 h-4 mr-1" />{doors}</Badge>
               {automatic && <Badge>Automatic</Badge>}
             </div>
-            <div className="relative mx-auto w-full pb-4">
-              <img src={ImgUrl} alt={Name} className="object-cover rounded-lg" />
+        
+            <div className="relative w-full aspect-video sm:aspect-[16/9] lg:aspect-auto lg:h-64 overflow-hidden rounded-lg">
+              <Image
+                src={ImgUrl}
+                alt={Name} 
+                fill 
+                 priority 
+                className="object-contain " // Changed from object-cover to contain to ensure the whole car is visible
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
             </div>
             <ItemDescription>{Comment}</ItemDescription>
             <div className="flex flex-col mt-4">
@@ -207,14 +218,14 @@ export default function ConfirmCard({
                 <TableRow>
                   <TableCell colSpan={2} className="text-lg font-bold">Total Amount</TableCell>
                   <TableCell className="text-right text-lg font-bold text-primary">
-                    EGP {grandTotal.toFixed(2)}
+                    € {grandTotal.toFixed(2)}
                   </TableCell>
                 </TableRow>
               </TableFooter>
             </Table>
            {selectedMileageType === "limited" && MileageKM && (
               <ItemDescription>
-                Price for every km above {KmTotal} Km is {(extraKmPrice?? 0).toFixed(2)} €
+                Price for every km above {KmTotal} Km is € {(extraKmPrice?? 0).toFixed(2)} 
               </ItemDescription>
             )}
 
@@ -223,7 +234,16 @@ export default function ConfirmCard({
                 disabled={isSubmitting}
                 className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white"
               >
-                {isSubmitting ? "Processing..." : userId ? "Confirm Reservation" : "Sign up to Reserve"}
+                {isSubmitting ? (
+    <div className="flex items-center justify-center gap-2">
+      <Loader2 className="h-5 w-5 animate-spin" />
+      <span>Finalizing Booking...</span>
+    </div>
+  ) : (
+    <span>
+      {userId ? "Confirm Reservation" : "Sign up to Reserve"}
+    </span>
+  )}
               </Button>
           </ItemContent>
         </div>

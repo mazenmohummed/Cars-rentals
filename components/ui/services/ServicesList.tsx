@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react"; // Added useTransition
 import ServiceCard from "./ServiceCard";
 import { Button } from "@/components/ui/button";
-import { Wifi, User, Fuel, Baby } from "lucide-react";
-import Link from "next/link";
+import { Wifi, User, Fuel, Baby, Loader2 } from "lucide-react"; // Added Loader2
+import { useRouter } from "next/navigation"; // Use router for navigation control
 import { FaPlus } from "react-icons/fa";
 
 // Helper to map icons based on name
@@ -31,6 +31,8 @@ interface ServicesListProps {
 
 export default function ServicesList({ services, carId, searchParams }: ServicesListProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isPending, startTransition] = useTransition(); // Initialize transition state
+  const router = useRouter();
 
   // Destructure from the searchParams prop
   const { from, to, pickup, return: returnCity, mileage } = searchParams;
@@ -41,39 +43,53 @@ export default function ServicesList({ services, carId, searchParams }: Services
     );
   };
 
+  // Handle the navigation with loading state
+  const handleNext = () => {
+    startTransition(() => {
+      const query = new URLSearchParams({
+        from: from || "",
+        to: to || "",
+        pickup: pickup || "",
+        return: returnCity || "",
+        mileage: mileage || "",
+        selectedServices: selectedIds.join(","),
+      });
+
+      router.push(`/cars/${carId}/services/personalDetails?${query.toString()}`);
+    });
+  };
+
   return (
     <div className="flex flex-col mx-auto items-center w-full md:w-5/6 lg:w-4/6">
-      {services.map((service) => (
-        <ServiceCard
-          key={service.id}
-          id={service.id}
-          Name={service.name}
-          price={service.price}
-          description={service.description || "Cost you addtional fee per reservation"}
-          Icon={getIcon(service.name)}
-          isSelected={selectedIds.includes(service.id)}
-          onToggle={toggleService}
-        />
-      ))}
+      <div className={`w-full transition-opacity duration-300 ${isPending ? "opacity-50 pointer-events-none" : ""}`}>
+        {services.map((service) => (
+          <ServiceCard
+            key={service.id}
+            id={service.id}
+            Name={service.name}
+            price={service.price}
+            description={service.description || "Cost you additional fee per reservation"}
+            Icon={getIcon(service.name)}
+            isSelected={selectedIds.includes(service.id)}
+            onToggle={toggleService}
+          />
+        ))}
+      </div>
 
-      <Link
-        className="mx-auto my-6"
-        href={{
-          pathname: `/cars/${carId}/services/personalDetails`, // Pointing to the next step
-          query: { 
-            from, 
-            to, 
-            pickup, 
-            return: returnCity, 
-            mileage,
-            selectedServices: selectedIds.join(",") 
-          },
-        }}
+      <Button 
+        className="w-40 my-6 shadow-lg" 
+        onClick={handleNext}
+        disabled={isPending}
       >
-        <Button className="w-40" disabled={selectedIds.length === 0 && services.length > 0}>
-          Next
-        </Button>
-      </Link>
+        {isPending ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Loading...
+          </>
+        ) : (
+          "Next"
+        )}
+      </Button>
     </div>
   );
 }

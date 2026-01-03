@@ -20,6 +20,7 @@ import { UploadDropzone } from "@/lib/uploadthing";
 import { toast } from "react-hot-toast";
 import { citySchema } from "@/lib/validators/city";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export function AddCity() {
   const router = useRouter();
@@ -90,7 +91,7 @@ export function AddCity() {
       <SheetTrigger asChild>
         <Button>Add City</Button>
       </SheetTrigger>
-      <SheetContent className="flex h-screen flex-col">
+      <SheetContent className="flex h-screen w-full flex-col">
         <div className="flex-1 overflow-y-auto px-4">
           <ScrollArea className="h-full">
             <SheetHeader>
@@ -135,10 +136,13 @@ export function AddCity() {
                 <Label>City Image</Label>
                 {image && (
                   <div className="relative aspect-video w-full overflow-hidden rounded-lg border">
-                    <img 
-                      src={image} 
-                      alt="Preview" 
-                      className="h-full w-full object-cover"
+                    <Image
+                      src={image}
+                      alt="Preview"
+                      fill // Replaces h-full w-full
+                      priority // Use this if this image is at the top of the page (LCP fix)
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
                 )}
