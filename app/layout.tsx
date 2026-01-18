@@ -34,8 +34,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cars",
+title: "Hurghadians",
   description: "Premium car rentals and logistics",
+  manifest: "/site.webmanifest",
+  icons: {
+    // Adding 'shortcut' helps older browsers and specific Android versions
+    icon: [
+      { url: "/favicon.ico", rel: "icon" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+    ],
+    // Explicitly defining the shortcut icon
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    // For MacOS Safari pinned tabs
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/safari-pinned-tab.svg",
+        color: "#166225",
+      },
+    ],
+  },
+  // Windows Tile Color (When pinned to Start Menu)
+  other: {
+    "msapplication-TileColor": "#166225",
+    "theme-color": "#166225",
+  },
 };
 
 export default function RootLayout({
@@ -44,13 +70,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
+    <html lang="en" suppressHydrationWarning className="overflow-x-hidden ">
       {/* 2. Added all font variables to the body */}
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${montserrat.variable} antialiased min-h-screen bg-background overflow-x-hidden`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${montserrat.variable}  antialiased min-h-screen bg-background overflow-x-hidden`}>
         <Providers>
           <div className="mx-auto w-full md:w-[90%] lg:w-5/6 flex flex-col min-h-screen">
             <HeadBar />
-            <main className="flex-grow">
+            <main className="grow">
               {children}
             </main>
             <Toaster position="top-center" />

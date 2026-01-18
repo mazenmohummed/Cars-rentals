@@ -24,10 +24,10 @@ ImgUrl: string,
 
 export function CityCard({Name,Comment,ImgUrl}: IProps) {
   return (
-    <div className="flex w-full max-w-md flex-col gap-6">
-      <Item variant="outline">
-        <ItemContent>          
-                 <div className="relative w-full aspect-video overflow-hidden rounded-lg">
+    <div className="flex w-full max-w-md  flex-col gap-6">
+      <Item variant="outline" className="h-fit bg-primary ">
+        <ItemContent className="flex flex-col h-full">          
+                 <div className="relative w-full aspect-[4/3] overflow-hidden rounded-lg">
                     <Image
                       src={ImgUrl}
                       alt={Name}
@@ -37,9 +37,9 @@ export function CityCard({Name,Comment,ImgUrl}: IProps) {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                  </div>
-          <ItemTitle className="text-2xl">{Name}</ItemTitle>
+          <ItemTitle className="text-white text-2xl">{Name}</ItemTitle>
           
-          <ItemDescription>
+          <ItemDescription className="h-auto block text-white line-clamp-none whitespace-normal text-pretty">
             {Comment}
           </ItemDescription>
         </ItemContent>

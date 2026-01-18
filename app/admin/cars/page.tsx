@@ -1,5 +1,5 @@
 import AdminCars from "@/components/Main/AdminCars";
-import { AddCar } from "@/components/ui/car/AddCar";
+import { AddCar } from "@/components/Main/car/AddCar";
 import { Button } from "@/components/ui/button";
 
 import { requireAdmin } from "@/lib/auth"

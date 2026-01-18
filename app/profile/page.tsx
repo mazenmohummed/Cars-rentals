@@ -106,7 +106,7 @@ export default function ProfilePage() {
 
           <div className="flex mx-auto flex-col gap-2 pt-6">
           <Link href="profile/reservations" >
-          <Button>Manege Reservations</Button>
+          <Button className="text-white">Manege Reservations</Button>
           </Link>
           </div>
           {/* 3. New Sign Out Button */}
@@ -167,7 +167,7 @@ export default function ProfilePage() {
 
               
 
-              <Button type="submit" disabled={loading} className="w-full md:w-auto">
+              <Button type="submit" disabled={loading} className="w-full text-white md:w-auto">
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Save Changes
               </Button>

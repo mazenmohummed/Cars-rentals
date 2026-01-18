@@ -193,7 +193,6 @@ if (!isOwner && !isAdmin) {
                   </div>
                  )}
 
-                 {reservation.flightNumber && (
                   <div className="my-4">
                     <p className="text-muted-foreground mb-1">Distance</p>
                     <div className="flex items-center gap-2">
@@ -203,7 +202,7 @@ if (!isOwner && !isAdmin) {
                         : 0} km</span>
                     </div>
                   </div>
-                 )}
+              
                 </div>
                 {/* Admin Only Section */}
                 {dbUser.role === "ADMIN" && (

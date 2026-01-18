@@ -27,15 +27,15 @@ interface ReviewCardProps {
 
 export function ReviewCard({ name, comment, imgUrl, stars }: ReviewCardProps) {
   return (
-   <Item variant="outline" className="h-full">
-      <ItemContent className="space-y-3">
+   <Item variant="outline" className=" bg-primary h-full">
+      <ItemContent className=" space-y-3">
         <div className="flex items-center gap-4">
           <Avatar>
             <AvatarImage src={imgUrl} alt={name} />
             <AvatarFallback>{name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <ItemTitle className="text-sm font-semibold">{name}</ItemTitle>
+            <ItemTitle className="text-sm text-white font-semibold">{name}</ItemTitle>
             {/* Render Stars */}
             <div className="flex gap-0.5">
               {[1, 2, 3, 4, 5].map((s) => (
@@ -50,7 +50,7 @@ export function ReviewCard({ name, comment, imgUrl, stars }: ReviewCardProps) {
             </div>
           </div>
         </div>
-        <ItemDescription className="text-foreground/80 line-clamp-3">
+        <ItemDescription className=" text-white line-clamp-3">
           {comment}
         </ItemDescription>
       </ItemContent>

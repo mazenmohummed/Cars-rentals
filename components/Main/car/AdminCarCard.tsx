@@ -8,10 +8,10 @@ import { Badge } from "@/components/ui/badge"
 import { User } from 'lucide-react';
 import { Luggage } from 'lucide-react';
 import { GiCarDoor } from "react-icons/gi";
-import { Button } from "../button";
-import { AddMileagePlan } from "../mileage/AddMileagePlan";
+import { Button } from "../../ui/button";
+import { AddMileagePlan } from "../../Main/mileage/AddMileagePlan";
 import { ICarData, UpdateCar } from "./UpdateCar";
-import {IMileagePlanData, UpdateMileagePlan} from "../mileage/UpdateMileagePlan";
+import {IMileagePlanData, UpdateMileagePlan} from "../../Main/mileage/UpdateMileagePlan";
 import Image from "next/image";
 
 

@@ -8,7 +8,7 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Star, Calendar, User } from "lucide-react";
-import { ReviewPagination } from "@/components/ui/reviews/ReviewPagination";
+import { ReviewPagination } from "@/components/Main/reviews/ReviewPagination";
 import Image from "next/image";
 import { DeleteReviewButton } from "./DeleteReviewButton";
 import { ReviewFilter } from "./ReviewFilter";

@@ -4,10 +4,10 @@ import Cities from "@/components/Main/Cities";
 import { Numbers } from "@/components/Main/Numbers"
 import { ReservationBar } from "@/components/Main/ReservationBar";
 import Vision from "@/components/Main/Vision";
-import { AddReviewForm } from "@/components/ui/reviews/AddReviewForm";
+import { AddReviewForm } from "@/components/Main/reviews/AddReviewForm";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { ReviewsSection } from "@/components/ui/reviews/ReviewsSection";
+import { ReviewsSection } from "@/components/Main/reviews/ReviewsSection";
 import { EditHomepageSettings } from "@/components/Main/EditHomepageSettings";
 import { prisma } from "@/lib/prisma"; // Import your prisma instance
 import Image from "next/image";
@@ -25,14 +25,14 @@ export default async function Home({ searchParams }: HomeProps) {
   });
 
   return (
-    <div className="">
+    <div className="  ">
       <main className="">
         {/* Pass initialData so the sheet inputs are pre-filled */}
         <ReservationBar />
         <Action />
 
         {/* 2. Dynamic Hero Section */}
-        <section className="relative w-full h-[50vh] sm:h-[60vh] md:h-[85vh] overflow-hidden bg-muted">
+        <section className="relative w-full  h-[50vh] sm:h-[60vh] md:h-[85vh] overflow-hidden ">
           <Image 
             src={homepageData?.mainImg || "/hero-car.jpg"} 
             alt="Premium Car Rental"
@@ -57,7 +57,7 @@ export default async function Home({ searchParams }: HomeProps) {
         <ReviewsSection searchParams={resolvedParams} />
 
         <SignedOut>
-          <div className="p-6 border rounded-xl bg-muted text-center mx-6">
+          <div className="p-6 border rounded-xl bg-background text-center mx-6">
             <p className="mb-4">Please sign in to share your experience with us.</p>
             <SignInButton mode="modal">
               <Button variant="outline">Sign In</Button>

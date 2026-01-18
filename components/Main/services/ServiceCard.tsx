@@ -1,6 +1,6 @@
 "use client";
 
-import { Item, ItemContent, ItemDescription, ItemTitle } from "../item";
+import { Item, ItemContent, ItemDescription, ItemTitle } from "../../ui/item";
 import { Switch } from "@/components/ui/switch";
 
 interface IProps {
@@ -18,7 +18,7 @@ const ServiceCard = ({ id, description, Name, Icon, price, isSelected, onToggle 
     <div className="w-full"> 
       <Item 
   variant="outline" 
-  className={`my-2 cursor-pointer transition-colors ${isSelected ? "border-primary bg-primary/5" : ""}`}
+  className={`my-2 cursor-pointer shadow-sm bg-card  transition-colors ${isSelected ? "border-primary bg-primary/5" : ""}`}
   onClick={() => onToggle(id)}
 >
   {/* justify-between pushes content to the far left and far right */}

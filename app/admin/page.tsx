@@ -3,10 +3,10 @@ import Cities from "@/components/Main/Cities";
 import { Numbers } from "@/components/Main/Numbers"
 import { ReservationBar } from "@/components/Main/ReservationBar";
 import Vision from "@/components/Main/Vision";
-import { AddReviewForm } from "@/components/ui/reviews/AddReviewForm";
+import { AddReviewForm } from "@/components/Main/reviews/AddReviewForm";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { ReviewsSection } from "@/components/ui/reviews/ReviewsSection";
+import { ReviewsSection } from "@/components/Main/reviews/ReviewsSection";
 import { EditHomepageSettings } from "@/components/Main/EditHomepageSettings";
 import { prisma } from "@/lib/prisma"; // Import your prisma instance
 import { requireAdmin } from "@/lib/auth"

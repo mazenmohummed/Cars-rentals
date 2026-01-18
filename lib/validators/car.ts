@@ -10,6 +10,13 @@ export const carSchema = z.object({
     .string()
     .min(1, "Car type is required"),
 
+  comment: z
+    .string()
+    .max(500, "Description cannot exceed 500 characters")
+    .optional()
+    .or(z.literal("")), // Allows empty strings without error
+ 
+
   doors: z
     .number()
     .int()

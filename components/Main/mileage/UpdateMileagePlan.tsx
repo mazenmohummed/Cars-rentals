@@ -26,7 +26,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { ScrollArea } from "../scroll-area";
+import { ScrollArea } from "../../ui/scroll-area";
 import { useRouter } from "next/navigation";
 
 

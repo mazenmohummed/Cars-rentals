@@ -9,6 +9,7 @@ export async function POST(req: Request) {
       data: {
         name: body.name,
         type: body.type,
+        comment: body.comment,
         seats: body.seats,
         bags: body.bags,
         doors: body.doors,

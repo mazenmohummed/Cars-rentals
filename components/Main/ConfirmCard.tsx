@@ -3,11 +3,11 @@
 import { useAuth } from "@clerk/nextjs"; // 1. Import useAuth
 import { toast } from "react-hot-toast";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Button } from "./button";
-import { Item, ItemContent, ItemDescription, ItemTitle } from "./item";
-import { Badge } from "./badge";
+import { Button } from "../ui/button";
+import { Item, ItemContent, ItemDescription, ItemTitle } from "../ui/item";
+import { Badge } from "../ui/badge";
 import { User, Luggage, Loader2 } from "lucide-react";
-import { Label } from "./label";
+import { Label } from "../ui/label";
 import { 
   Table, 
   TableBody, 
@@ -17,7 +17,7 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from "./table";
+} from "../ui/table";
 import { differenceInDays, parseISO } from "date-fns";
 import { useState, useEffect } from "react";
 import { GiCarDoor } from "react-icons/gi";
@@ -135,19 +135,19 @@ export default function ConfirmCard({
 
   return (
     <div className="flex w-full md:w-5/6 xl:w-4/6 lg:w-5/6 mx-auto h-auto">
-      <Item variant="outline" className="w-full flex h-auto">
+      <Item variant="outline" className="w-full bg-primary flex h-auto">
         <div className="flex w-full flex-wrap">
           <ItemContent className="m-2">
-            <ItemTitle className="text-2xl">{Name}</ItemTitle>
-            <ItemTitle className="text-xl text-muted-foreground">{Type}</ItemTitle>
+            <ItemTitle className="text-2xl text-white">{Name}</ItemTitle>
+            <ItemTitle className="text-xl text-white/60">{Type}</ItemTitle>
             <div className="flex gap-2 my-2">
-              <Badge variant="outline"><User className="w-4 h-4 mr-1" />{seats}</Badge>
-              <Badge variant="outline"><Luggage className="w-4 h-4 mr-1" />{bags}</Badge>
-              <Badge variant="outline"><GiCarDoor className="w-4 h-4 mr-1" />{doors}</Badge>
-              {automatic && <Badge>Automatic</Badge>}
+              <Badge variant="outline" className="gap-1 bg-background"><User className="w-4 h-4 mr-1 " />{seats}</Badge>
+              <Badge variant="outline" className="gap-1 bg-background"><Luggage className="w-4 h-4 mr-1" />{bags}</Badge>
+              <Badge variant="outline" className="gap-1 bg-background"><GiCarDoor className="w-4 h-4 mr-1" />{doors}</Badge>
+              {automatic && <Badge className="bg-background text-foreground">Automatic</Badge>}
             </div>
         
-            <div className="relative w-full aspect-video sm:aspect-[16/9] lg:aspect-auto lg:h-64 overflow-hidden rounded-lg">
+            <div className="relative w-full aspect-video sm:aspect-video lg:aspect-auto lg:h-64 overflow-hidden rounded-lg">
               <Image
                 src={ImgUrl}
                 alt={Name} 
@@ -157,10 +157,10 @@ export default function ConfirmCard({
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
-            <ItemDescription>{Comment}</ItemDescription>
-            <div className="flex flex-col mt-4">
+            <ItemDescription className="mb-4 text-white">{Comment}</ItemDescription>
+            <div className="flex flex-col text-white  mt-4">
               <div className="flex items-baseline gap-1">
-                <span className="text-sm font-medium">E£</span>
+                <span className="text-sm font-medium">€ </span>
                 <span className="text-3xl font-bold">{currentDailyPrice}</span>
                 <span className="text-sm">/day</span>
               </div>
@@ -168,8 +168,8 @@ export default function ConfirmCard({
           </ItemContent>
 
           <ItemContent className="m-2 mx-auto  flex-1">
-            <ItemTitle className="text-2xl my-2">Booking Summary</ItemTitle>
-            <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-muted rounded-lg">
+            <ItemTitle className="text-2xl text-white my-2">Booking Summary</ItemTitle>
+            <div className="grid grid-cols-2 gap-4 mb-6 bg-background shadow-md p-4  rounded-lg">
               <div>
                 <Label className="text-muted-foreground">Pick Up</Label>
                 <p className="font-semibold">{checkOutDate}</p>
@@ -182,15 +182,19 @@ export default function ConfirmCard({
               </div>
             </div>
 
-            <Table>
-              <TableCaption>
-                Plan: {selectedMileageType.toUpperCase()}
+            <Table className="text-white">
+              <TableCaption className="text-white/60">
+             KM: {selectedMileageType === "limited" ? (
+    `${KmTotal} KM`
+  ) : (
+    selectedMileageType.toUpperCase()
+  )}
               </TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Service</TableHead>
-                  <TableHead>Qty</TableHead>
-                  <TableHead className="text-right">Total</TableHead>
+              <TableHeader  >
+                <TableRow >
+                  <TableHead className="text-white">Service</TableHead>
+                  <TableHead className="text-white">Qty</TableHead>
+                  <TableHead className="text-right text-white">Total</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -214,25 +218,25 @@ export default function ConfirmCard({
                   </TableRow>
                 ))}
               </TableBody>
-              <TableFooter>
+              <TableFooter className="rounded-md">
                 <TableRow>
                   <TableCell colSpan={2} className="text-lg font-bold">Total Amount</TableCell>
-                  <TableCell className="text-right text-lg font-bold text-primary">
+                  <TableCell className="text-right text-lg font-bold text-white">
                     € {grandTotal.toFixed(2)}
                   </TableCell>
                 </TableRow>
               </TableFooter>
             </Table>
            {selectedMileageType === "limited" && MileageKM && (
-              <ItemDescription>
-                Price for every km above {KmTotal} Km is € {(extraKmPrice?? 0).toFixed(2)} 
+              <ItemDescription className="text-white/60">
+               The price for each kilometer is € {(extraKmPrice?? 0).toFixed(2)}  
               </ItemDescription>
             )}
 
                  <Button 
                 onClick={handleConfirm} 
                 disabled={isSubmitting}
-                className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white"
+                className="w-full mt-6 bg-background text-foreground hover:bg-button-hover"
               >
                 {isSubmitting ? (
     <div className="flex items-center justify-center gap-2">

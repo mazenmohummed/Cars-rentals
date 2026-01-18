@@ -6,8 +6,9 @@ interface IProps {
 const NumberCard = ({ Title, Text }: IProps) => {
   return (
     <div className="
-      p-6 
-      bg-white/10 
+      p-4 
+      mx-auto
+      bg-primary
       rounded-xl 
       text-white 
       w-full 
@@ -16,15 +17,15 @@ const NumberCard = ({ Title, Text }: IProps) => {
       md:text-left 
       transition-all 
       /* This is the key fix: */
-      break-words 
+      wrap-break-word
       overflow-wrap-anywhere
     "> 
         {/* break-words ensures long titles don't overflow */}
-        <h2 className="font-bold text-2xl md:text-3xl mb-2 text-white break-words">
+        <h2 className="font-bold text-2xl  md:text-3xl text-white mb-2  wrap-break-word">
           {Title}
         </h2>
         {/* whitespace-normal ensures text wraps naturally */}
-        <p className="text-sm md:text-base text-gray-200 opacity-90 leading-relaxed whitespace-normal break-words">
+        <p className="text-sm md:text-base opacity-90 leading-relaxed text-white whitespace-normal wrap-break-word">
           {Text}
         </p>
     </div>

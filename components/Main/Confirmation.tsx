@@ -1,4 +1,4 @@
-import { ConfirmCard } from "../ui/ConfirmCard"
+import { ConfirmCard } from "./ConfirmCard"
 
 interface IProps {
 

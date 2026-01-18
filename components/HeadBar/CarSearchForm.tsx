@@ -78,7 +78,7 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
     <Form {...form}>
   <form 
     onSubmit={form.handleSubmit(onSubmit)} 
-    className="flex flex-col lg:flex-row items-stretch lg:items-end gap-4 p-4 border rounded-lg bg-card shadow-sm w-full"
+    className="flex flex-col lg:flex-row bg-primary items-stretch lg:items-end gap-4 p-4 border rounded-lg shadow-sm w-full"
   >
     {/* MAIN CONTENT CONTAINER */}
     <div className="flex flex-col w-full gap-4">
@@ -91,8 +91,8 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
           name="pickupCityId"
           render={({ field }) => (
             <FormItem className="flex flex-col w-full">
-              <FormLabel>Pickup Location</FormLabel>
-              <FormControl>
+              <FormLabel className="text-white ">Pickup Location</FormLabel>
+              <FormControl className="">
                 <CityPicker 
                   title="Select pickup city" 
                   cities={cities} 
@@ -111,7 +111,7 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
           name="returnCityId"
           render={({ field }) => (
             <FormItem className="flex flex-col w-full">
-              <FormLabel>Return Location</FormLabel>
+              <FormLabel className="text-white ">Return Location</FormLabel>
               <FormControl>
                 <CityPicker 
                   title="Select return city" 
@@ -133,19 +133,19 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
           control={form.control}  
           name="pickupDate"
           render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
+            <FormItem className="flex text-white flex-col w-full">
               <FormLabel>Pickup Date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
-                  <FormControl>
+                  <FormControl >
                     <Button
-                      variant={"outline"}
+                      variant={"secondary"}
                       className={cn(
-                        "w-full pl-3 text-left font-normal", // Changed w-[240px] to w-full
+                        "w-full pl-3  text-left text-foreground bg-background hover:bg-background/90 font-normal", // Changed w-[240px] to w-full
                         !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                      {field.value ? format(field.value, "PPP") : <span className="text-foreground" >Pick a date</span>}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
                   </FormControl>
@@ -170,19 +170,19 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
           control={form.control}
           name="returnDate"
           render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
+            <FormItem className="flex text-white flex-col w-full">
               <FormLabel>Return Date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant={"secondary"}
                       className={cn(
-                        "w-full pl-3 text-left font-normal", // Changed w-[240px] to w-full
+                        "w-full pl-3 text-foreground bg-background hover:bg-background/90  text-left font-normal", // Changed w-[240px] to w-full
                         !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                      {field.value ? format(field.value, "PPP") : <span className="text-foreground">Pick a date</span>}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
                   </FormControl>
@@ -213,11 +213,11 @@ export function CarSearchForm({ cities }: CarSearchFormProps) {
     <Button 
           type="submit" 
           disabled={isLoading} 
-          className="h-10 w-full lg:w-auto mt-2 lg:mt-0 min-w-[160px]"
+          className="h-10 w-full text-foreground bg-background hover:bg-button-hover lg:w-auto mt-2 lg:mt-0 min-w-[160px]"
         >
           {isLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-4 w-4  animate-spin" />
               Searching...
             </>
           ) : (

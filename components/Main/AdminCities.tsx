@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { AdminCarCard } from "../ui/car/AdminCarCard";
-import { CityCard } from "../ui/city/CityCard";
-import { AdminCityCard } from "../ui/city/AdminCitycard";
+import { AdminCarCard } from "./car/AdminCarCard";
+import { CityCard } from "./city/CityCard";
+import { AdminCityCard } from "./city/AdminCitycard";
 import Cities from "./Cities";
 
 const AdminCities = async () => {

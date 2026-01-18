@@ -13,29 +13,31 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { CarType } from "./CarType"
-import { IntInput } from "../IntInput"
+import { IntInput } from "../../ui/IntInput"
 import { useState } from "react"
-import { ItemContent, ItemTitle } from "../item"
-import { Switch } from "../switch"  
+import { ItemContent, ItemTitle } from "../../ui/item"
+import { Switch } from "../../ui/switch"  
 import { UploadDropzone } from "@/lib/uploadthing";
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {toast, } from "react-hot-toast"
 import { carSchema } from "@/lib/validators/car";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Textarea } from "@/components/ui/textarea"
 
 
 
 export function AddCar() {
     const [images, setImages] = useState<string[]>([]);
-    const [name, setName] = useState("")
-    const [type, setType] = useState("")
+    const [name, setName] = useState("");
+    const [type, setType] = useState("");
     const [doors, setDoors] = useState<number | null>(null);
-    const [seats, setSeats] = useState<number | null>(null)
-    const [bags, setBags] = useState<number | null>(null)
-    const [gearbox, setGearbox] = useState(false)
-    const [isActive, setIsActive] = useState(true)
-    const [loading, setLoading] = useState(false)
+    const [seats, setSeats] = useState<number | null>(null);
+    const [bags, setBags] = useState<number | null>(null);
+    const [gearbox, setGearbox] = useState(false);
+    const [comment, setComment] = useState("");
+    const [isActive, setIsActive] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const [open, setOpen] = useState(false);
@@ -54,6 +56,7 @@ export function AddCar() {
       gearbox,
       images,
       isActive,
+      comment,
     });
 
     if (!result.success) {
@@ -84,9 +87,10 @@ export function AddCar() {
       toast.success("Car added successfully 🚗");
       setOpen(false); // Close Sheet
       router.refresh();
-      // Optional: reset form
+      //  reset form
       setName("");
       setType("");
+      setComment("");
       setDoors(null);
       setSeats(null);
       setBags(null);
@@ -139,6 +143,20 @@ export function AddCar() {
                   <p className="text-sm text-red-500">{errors.type}</p>
                 )}
           </div>
+
+          <div className="grid gap-3">
+            <Label htmlFor="comment">Describetion</Label>
+            <Textarea 
+              value={comment} 
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Describe the car or special features..."
+            />
+            {/* If you have a validator for this, add the error check here */}
+            {errors.comment && (
+              <p className="text-sm text-red-500">{errors.comment}</p>
+            )}
+          </div>
+
           <IntInput label="Doors" value={doors} onChange={setDoors}/>
           {errors.doors && (
              <p className="text-sm text-red-500">{errors.doors}</p>
@@ -158,13 +176,6 @@ export function AddCar() {
           <Switch id="gearbox" checked={gearbox} onCheckedChange={setGearbox} />
           </div>
           </ItemContent>
-          {/* 
-          if you need to add multiple photos add conect this with car images
-          <ImageUpload
-             value={images}
-             onChange={setImages}
-             maxImages={5}
-           /> */}
              <Label>Car Image</Label>
              {images && (
                   <div className="relative aspect-video w-full overflow-hidden rounded-lg border">

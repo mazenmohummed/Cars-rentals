@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { CityCard } from "../ui/city/CityCard";
+import { CityCard } from "./city/CityCard";
 
 const Cities = async () => {
   // 1. Fetch data from Prisma
@@ -12,7 +12,7 @@ const Cities = async () => {
   return (
     <div className="mx-auto justify-center w-full py-6 px-2">
       <div className="flex flex-wrap justify-center mx-auto">
-        <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-4xl">
+        <h2 className="text-2xl  md:text-3xl lg:text-4xl xl:text-4xl">
           Our Cities
         </h2>
       </div>

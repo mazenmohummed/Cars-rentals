@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import ConfirmCard from "@/components/ui/ConfirmCard";
+import ConfirmCard from "@/components/Main/ConfirmCard";
 import { parseISO, differenceInDays } from "date-fns";
 
 export default async function ConfirmationPage({ 
@@ -78,7 +78,7 @@ export default async function ConfirmationPage({
         Name={car.name}
         Type={car.type}
         ImgUrl={car.mainImage}
-        Comment="Reliable and comfortable vehicle for your trip."
+        Comment={car.comment||""}
         Id={car.id}
         seats={car.seats ?? 0}
         bags={car.bags ?? 0}

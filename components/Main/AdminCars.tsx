@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { AdminCarCard } from "../ui/car/AdminCarCard";
+import { AdminCarCard } from "./car/AdminCarCard";
 
 const AdminCars = async () => {
   // Fetch cars with related mileage plans

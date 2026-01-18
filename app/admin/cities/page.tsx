@@ -1,5 +1,5 @@
 import AdminCities from "@/components/Main/AdminCities";
-import { AddCity } from "@/components/ui/city/AddCity";
+import { AddCity } from "@/components/Main/city/AddCity";
 import { requireAdmin } from "@/lib/auth"
 
 

@@ -37,18 +37,18 @@ export function CarCard({
 }: IProps) {
   return (
     <div className="flex w-full min-w-[300px] flex-col gap-6">
-          <Item variant="outline">
+          <Item variant="outline" className="bg-primary">
             <ItemContent>
     
-                <ItemTitle className="text-2xl">{Name}</ItemTitle>
-                <ItemTitle className="text-2xl">{Type}</ItemTitle>
-                <div className="flex gap-2">
-                <Badge variant="outline"><User />{seats}</Badge>
-                <Badge variant="outline"><Luggage />{bags}</Badge>
-                <Badge variant="outline"><GiCarDoor />{doors}</Badge>
-                {automatic && <Badge>Automatic</Badge>}
+                <ItemTitle className="text-2xl text-white ">{Name}</ItemTitle>
+                <ItemTitle className="text-2xl text-white">{Type}</ItemTitle>
+                <div className="flex gap-2 ">
+                <Badge variant="outline" className=" bg-background"><User />{seats}</Badge>
+                <Badge variant="outline" className=" bg-background"><Luggage />{bags}</Badge>
+                <Badge variant="outline" className="bg-background"><GiCarDoor />{doors}</Badge>
+                {automatic && <Badge className=" bg-background text-foreground" >Automatic</Badge>}
                 </div>
-                     <div className="relative w-full aspect-video overflow-hidden rounded-lg">
+                     <div className="relative w-full overflow-hidden rounded-md">
                        <Image 
                             src={ImgUrl} 
                             alt={Name}
@@ -60,10 +60,10 @@ export function CarCard({
                      </div>
               
               
-              <ItemDescription>
+              <ItemDescription className="text-white my-2">
                 {Comment}
               </ItemDescription>
-              <div className="flex items-end gap-2">
+              <div className="flex items-end text-white gap-2">
                {/* Daily price */}
                  <div className="flex items-baseline gap-1">
                    <span className="text-sm font-medium ">€</span>
@@ -72,7 +72,7 @@ export function CarCard({
                  </div>
     
                  {/* Total price */}
-                 <span className="text-sm ">€ {TotalPrice} Total</span>
+                 <span className="text-sm text-white/60 ">€ {TotalPrice} Total</span>
     
     
                    

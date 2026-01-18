@@ -25,14 +25,14 @@ export function ReviewSort() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+      <span className="text-sm  font-medium whitespace-nowrap">
         Sort by:
       </span>
       <Select value={currentSort} onValueChange={onSortChange}>
-        <SelectTrigger className="w-[160px]">
-          <SelectValue placeholder="Sort order" />
+        <SelectTrigger className="bg-background w-[160px]">
+          <SelectValue className="" placeholder="Sort order" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-background">
           <SelectItem value="newest">Newest</SelectItem>
           <SelectItem value="highest">Highest Rating</SelectItem>
           <SelectItem value="lowest">Lowest Rating</SelectItem>

@@ -25,7 +25,7 @@ export function ReviewPagination({ totalPages, currentPage }: { totalPages: numb
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      <div className="text-sm font-medium">
+      <div className="text-sm  font-medium">
         Page {currentPage} of {totalPages}
       </div>
 

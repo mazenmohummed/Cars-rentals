@@ -1,6 +1,6 @@
 import AdminCities from "@/components/Main/AdminCities";
-import { AddCity } from "@/components/ui/city/AddCity";
-import ManageReviewsPage from "@/components/ui/reviews/ManageReviewsPage";
+import { AddCity } from "@/components/Main/city/AddCity";
+import ManageReviewsPage from "@/components/Main/reviews/ManageReviewsPage";
 import { requireAdmin } from "@/lib/auth"
 
 

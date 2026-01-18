@@ -58,7 +58,7 @@ async function onSubmit(values: ReviewFormValues) {
 }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4 border rounded-md bg-card">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4 bg-background border rounded-md ">
         <FormField
           control={form.control}
           name="stars"
@@ -106,7 +106,7 @@ async function onSubmit(values: ReviewFormValues) {
           )}
         />
 
-        <Button type="submit" className="flex mx-auto" disabled={loading}>
+        <Button type="submit" className="flex text-white mx-auto" disabled={loading}>
           {loading ? "Submitting..." : "Post Review"}
         </Button>
       </form>

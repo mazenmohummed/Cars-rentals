@@ -1,10 +1,10 @@
-import { CarCard } from "@/components/ui/car/CarCard"
+import { CarCard } from "@/components/Main/car/CarCard"
 import { prisma } from "@/lib/prisma";
 import Link from "next/link"
 import { differenceInDays, parseISO, startOfDay } from "date-fns";
 import { SearchX, PhoneCall } from "lucide-react"; // Icons for the empty state
 import { Button } from "@/components/ui/button";
-import { CarCardLink } from "@/components/ui/car/CarCardLink"
+import { CarCardLink } from "@/components/Main/car/CarCardLink"
 
 export interface CarsProps {
   searchParams: { 
@@ -15,7 +15,7 @@ export interface CarsProps {
   };
 }
 
-const Cars = async ({ searchParams }: CarsProps) => {
+const  Cars = async ({ searchParams }: CarsProps) => {
   const { from, to, pickupCityId, returnCityId } = searchParams;
 
   const startDate = from ? startOfDay(parseISO(from)) : null;
@@ -125,7 +125,7 @@ const Cars = async ({ searchParams }: CarsProps) => {
                 Name={car.name}
                 Type={car.type}
                 ImgUrl={car.mainImage}
-                Comment="" 
+                Comment={car.comment || ""} 
                 DayPrice={dailyPrice}
                 TotalPrice={totalCalculation}
                 automatic={car.gearbox ?? false}

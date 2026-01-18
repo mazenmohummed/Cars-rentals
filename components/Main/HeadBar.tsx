@@ -12,6 +12,8 @@ import {
 } from '@clerk/nextjs'
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import Image from "next/image";
+import logoDark from "../logo/logoDark.png"
+import logoLight from "../logo/logoLight.png"
 
 export function HeadBar() {
   const { user: clerkUser } = useUser();
@@ -36,27 +38,36 @@ export function HeadBar() {
       <nav className="flex pt-6 justify-center">
         <div className="flex items-center justify-between px-6 w-full">
           <div className="flex items-center">
-            <Link href="/">
-              {/* REPLACE: Static text replaced with dynamic logo */}
-              {logo ? (
-              <div className="relative h-10 w-32"> 
-                  <Image 
-                    src={logo} 
-                    alt="Logo" 
+            <Link href="/" className="flex items-center">
+              {logoLight && logoDark ? (
+                <div className="relative h-10 w-60">
+                  {/* Light Mode Logo: Hidden when parent or root has .dark */}
+                  <Image
+                    src={logoLight}
+                    alt="Logo"
                     fill
-                    priority 
-                    className="object-contain" 
+                    priority
+                    className="object-contain dark:hidden"
+                    sizes="(max-width: 768px) 100px, 150px"
+                  />
+                  {/* Dark Mode Logo: Hidden by default, shown when .dark is present */}
+                  <Image
+                    src={logoDark}
+                    alt="Logo"
+                    fill
+                    priority
+                    className="hidden object-contain dark:block"
                     sizes="(max-width: 768px) 100px, 150px"
                   />
                 </div>
               ) : (
-                <h2 className="text-xl font-bold">Cars</h2> // Fallback if no logo
+                <h2 className="text-xl font-bold">Hurghadians</h2>
               )}
             </Link>
           </div>
 
           <div className="flex items-center gap-4">
-            <Globe className="cursor-pointer" />
+            {/* <Globe className="cursor-pointer" /> */}
 
             <SignedOut>
               <div className="flex items-center gap-2">
@@ -65,7 +76,7 @@ export function HeadBar() {
                 </SignInButton>
                 
                 <SignUpButton mode="modal">
-                  <button className="bg-primary text-primary-foreground rounded-md text-sm h-9 px-4 font-medium">
+                  <button className="bg-primary rounded-md text-secondary text-sm h-9 px-4 font-medium">
                     Sign Up
                   </button>
                 </SignUpButton>

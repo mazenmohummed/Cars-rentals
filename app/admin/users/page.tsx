@@ -8,7 +8,7 @@ export default async function reviewsPage() {
 
   return (
     <main className="">
-        <h1 className="flex justify-center items-center text-4xl mx-auto py-4">Manage Reviews</h1> 
+        <h1 className="flex justify-center items-center text-4xl mx-auto py-4">Manage Users</h1> 
     <div className="flex justify-center mt-10">
        
        <UserManagementClient/>

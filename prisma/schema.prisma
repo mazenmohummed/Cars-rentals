@@ -62,8 +62,9 @@ model City {
 model Car {
   id String @id @default(cuid()) @map("_id")
 
-  name String
-  type String
+  name    String
+  type    String
+  comment String?
 
   seats   Int?
   gearbox Boolean? // true = automatic, false = manual
@@ -289,7 +290,6 @@ model Review {
 
 model Homepage {
   id           String   @id @default(cuid()) @map("_id")
-  logo         String
   title1       String
   description1 String?
   title2       String

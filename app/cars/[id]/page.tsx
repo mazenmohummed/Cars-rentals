@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import ReserveCard from "@/components/ui/reservation/ReserveCard";
+import ReserveCard from "@/components/Main/reservation/ReserveCard";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -44,7 +44,7 @@ export default async function CarDetailsPage({ params, searchParams }: PageProps
       Name={car.name}
       Type={car.type}
       ImgUrl={car.mainImage}
-      Comment="Comfortable & reliable car"
+      Comment={car.comment || ""}
       seats={car.seats ?? 0}
       bags={car.bags ?? 0}
       doors={car.doors ?? 0}

@@ -1,0 +1,21 @@
+{
+  "name": "Hurghadians Premium Car Rentals",
+  "short_name": "Hurghadians",
+  "description": "Premium car rentals and logistics in Hurghada",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

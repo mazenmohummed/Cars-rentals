@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { ItemTitle } from "@/components/ui/item";
-import ServicesList from "@/components/ui/services/ServicesList";
+import ServicesList from "@/components/Main/services/ServicesList";
 
 interface PageProps {
   params: Promise<{ id: string }>;

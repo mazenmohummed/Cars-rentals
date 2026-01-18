@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
-import { ServiceForm } from "@/components/ui/services/ServiceForm"
-import { ServiceControls } from "@/components/ui/services/ServiceControls"
+import { ServiceForm } from "@/components/Main/services/ServiceForm"
+import { ServiceControls } from "@/components/Main/services/ServiceControls"
 import { Settings2 } from "lucide-react"
 import { requireAdmin } from "@/lib/auth"
 

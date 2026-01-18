@@ -72,31 +72,6 @@ export function EditHomepageSettings({ initialData }: { initialData?: any }) {
 
           <div className="p-4 pb-24 space-y-8">
             
-            {/* LOGO SECTION */}
-            <div className="space-y-4">
-              <Label className="font-bold">Company Logo</Label>
-              {formData.logo && (
-                <div className="border rounded-md p-2 w-fit bg-muted/50">
-                  <Image 
-                      src={formData.logo} 
-                      alt="Company Logo"
-                      fill // Makes the image fill the container
-                      className="object-contain" // Keeps the logo from stretching
-                      priority // Since a logo is usually at the top, it needs to load fast
-                      sizes="(max-width: 768px) 100px, 150px"
-                    />
-                </div>
-              )}
-              <UploadDropzone 
-                appearance={{
-                  label: "text-black dark:text-white text-xs",
-                  allowedContent: "text-black dark:text-white text-[10px]",
-                  button: "bg-black dark:bg-white text-white dark:text-black text-xs px-4 py-2 h-auto",
-                }}
-                endpoint="carImage" 
-                onClientUploadComplete={(res) => setFormData({...formData, logo: res[0].ufsUrl})} 
-              />
-            </div>
 
             {/* HERO SECTION */}
             <div className="space-y-6 border-t pt-6">
@@ -147,9 +122,8 @@ export function EditHomepageSettings({ initialData }: { initialData?: any }) {
                   <Image 
                       src={formData.mainImg} 
                       alt="Company Logo"
-                      fill // Makes the image fill the container
-                      className="h-40 w-full object-cover rounded-md border" // Keeps the logo from stretching
-                      sizes="(max-width: 768px) 100px, 150px"
+                      width={350}
+                      height={100}
                     />
                 )}
                 <UploadDropzone
@@ -200,7 +174,7 @@ export function EditHomepageSettings({ initialData }: { initialData?: any }) {
                             onClick={() => setFormData({...formData, visionImg: formData.visionImg.filter((_: string, index: number) => index !== i)})} 
                             className="absolute -top-1 -right-1   p-1  z-10"
                           >
-                            <X size={12}/>
+                            <X size={50}/>
                           </button>
                         </div>
                       ))}

@@ -19,12 +19,12 @@ export async function PATCH(req: Request) {
     const homepage = await prisma.homepage.upsert({
       where: { id: "main_config" }, 
       update: { 
-        logo, title1, description1, title2, description2, 
+        title1, description1, title2, description2, 
         title3, description3, mainImg, visionImg, vision, visionText 
       },
       create: { 
         id: "main_config",
-        logo, title1, description1, title2, description2, 
+         title1, description1, title2, description2, 
         title3, description3, mainImg, visionImg, vision, visionText 
       },
     });

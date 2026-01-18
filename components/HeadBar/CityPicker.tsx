@@ -39,10 +39,10 @@ export function CityPicker({ title, cities, onChange, defaultValue }: IProps) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="default"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between text-foreground bg-background hover:bg-background/90"
         >
           {value
             ? cities.find((city) => city.value === value)?.label

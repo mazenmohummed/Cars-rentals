@@ -22,15 +22,15 @@ export default function Vision({ data }: { data: any }) {
 
   return (
     <section className="py-20 px-6 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row items-center gap-12">
+      <div className="flex flex-col md:flex-row  gap-12">
         
         {/* LEFT SIDE: TEXT CONTENT */}
-        <div className="flex-1 w-full space-y-6">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-primary break-words">
+        <div className="flex-1 w-full pt-8 space-y-6">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight  break-words">
             {data.vision}
           </h2>
           <div className="w-20 h-1.5 bg-primary rounded-full" />
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed break-words">
+          <p className="text-lg md:text-xl  text-muted-foreground leading-relaxed break-words">
             {data.visionText}
           </p>
         </div>
@@ -49,7 +49,7 @@ export default function Vision({ data }: { data: any }) {
                   <div className="p-1">
                     <Card className="border-none shadow-none bg-transparent">
                       {/* 2. Added 'relative' to CardContent - REQUIRED for 'fill' to work */}
-                      <CardContent className="relative flex aspect-square items-center justify-center p-0 overflow-hidden rounded-3xl shadow-2xl bg-muted">
+                      <CardContent className="relative flex aspect-square items-center justify-center p-0 overflow-hidden rounded-3xl bg-muted">
                         <Image
                           src={url}
                           alt={`Vision Slide ${index}`}
